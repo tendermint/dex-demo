@@ -12,6 +12,8 @@ that can be built on the Cosmos SDK. This platform intends to utilize certain DE
 creating a decentralized exchange network that utilizes various crypto primitives for the facilitation
 of value transfers across systems.
 
+![DeX Demo](./.screenshots/photo5026111012457261159.jpg)
+
 ## Getting The Code
 
 The easiest way to get the code is to download one of our pre-built testnet release binaries
@@ -36,6 +38,8 @@ API docs are available at http://docs.serverfuse.tools/dex-demo-embedded
 
 ### Getting Coins
 
+![DeX Demo](./.screenshots/photo5026111012457261162.jpg)
+
 To get coins to play with on the live testnet, you'll need to use the faucet. To do so, follow these steps:
 
 1. Click the wallet icon in the left sidebar. It looks like this: ![Wallet Icon](./docs/images/wallet-icon.png)
@@ -53,7 +57,6 @@ To create a local testnet, do the following:
 4. In a separate terminal, run `dexcli rest-server`.
 
 You now have a single-validator `dexd` chain and an attached REST server. You should now be able to play with the DEX at http://localhost:1317.
-
 
 ## Architecture
 
@@ -84,6 +87,4 @@ To update the UI you will need:
 Unit tests can be run via `make test-unit`. Unit tests are marked as such via calls to `testflags.UnitTest` within the test functions themselves.
 
 Integration tests can be run via `make test`. Note that this will build all tools prior to execution. Integration tests execute against the CLI. As such, they are somewhat resource-intensive and slow.
-
-  
 
