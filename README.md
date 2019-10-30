@@ -35,7 +35,7 @@ To access our live testnet via a non-validating node, do the following:
 
 Charts and graphs may look off until the chain is fully synced. You will be unable to post orders until synchronization is complete.
 
-API docs are available at http://docs.serverfuse.tools/dex-demo-embedded
+API docs are available at https://api.serverfuse.tools/
 
 ### Getting Coins
 
