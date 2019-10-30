@@ -1,0 +1,52 @@
+@import "../../variables";
+
+.qr-icon {
+  &__tooltip {
+    white-space: nowrap;
+  }
+}
+
+.qr-modal {
+  .modal {
+    border-radius: 4px;
+
+    &__container {
+      margin-top: -8rem;
+      flex: 0 0 auto;
+      background-color: $white;
+      border-radius: 8px;
+      box-shadow: 0 4px 4px 4px rgba($black, .2);
+    }
+
+    &__overlay {
+      background-color: rgba($black, .8);
+    }
+  }
+
+  &__container {
+    @extend %column-nowrap;
+  }
+
+  &__content {
+    @extend %row-nowrap;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+    padding: 1rem 2rem 0;
+  }
+
+  &__qrcode {
+    height: 16rem;
+    width: 16rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: .25rem;
+  }
+
+  &__actions {
+    @extend %row-nowrap;
+    justify-content: center;
+    padding: 0rem 1rem 1rem;
+    flex: 0 0 auto;
+  }
+}

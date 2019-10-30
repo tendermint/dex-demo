@@ -1,0 +1,58 @@
+@import "../../variables.scss";
+
+.app-sidebar {
+  flex: 0 0 auto;
+  width: 3rem;
+  box-shadow: 2px 0 2px 0 rgba($black, .3);
+  background-color: mix($black, $mineshaft-gray, 50);
+
+  &__item {
+    position: relative;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    height: 3rem;
+    width: 3rem;
+    padding: .5rem;
+    box-sizing: border-box;
+    background-position: center;
+
+
+    &:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: calc(100% - .75rem);
+      height: calc(100% - .75rem);
+      margin: .375rem;
+      border-radius: 4px;
+      transition: 150ms ease-in-out;
+    }
+
+    &--hoverable {
+      &:after {
+        @extend %clickable;
+      }
+      &:hover {
+        &:after {
+          background-color: rgba($regal-blue, .25);
+        }
+      }
+
+      &:active {
+        &:after {
+          background-color: rgba($regal-blue, .5);
+        }
+      }
+    }
+
+
+    &--active {
+      position: relative;
+
+      &:after {
+        background-color: rgba($regal-blue, .25);
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+@import "../../../variables";
+
+.input {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  &__label {
+    flex: 0 0 auto;
+    font-size: .75rem;
+    font-weight: 400;
+    padding-right: 1rem;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    flex: 1 1 auto;
+    background-color: rgba($white, .05);
+    padding: .25rem .5rem;
+    border-radius: 2px;
+    transition:
+      background-color 150ms ease-in-out,
+      box-shadow 150ms ease-in-out;
+
+    &:hover {
+      background-color: rgba($white, .05);
+    }
+
+    &:focus-within {
+      background-color: rgba($black, .05);
+      box-shadow: 0 0 0px 2px $regal-blue;
+    }
+  }
+
+  &__suffix {
+    color: rgba($white, .5);
+    font-size: .75rem;
+    user-select: none;
+    width: 2rem;
+    text-align: right;
+    padding-left: .5em;
+  }
+
+  input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    color: $white;
+    font-size: .75rem;
+    font-weight: 300;
+    flex: 1 1 auto;
+    width: 0;
+
+    &::placeholder {
+      color: rgba($white, .25);
+    }
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}

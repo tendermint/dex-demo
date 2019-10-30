@@ -1,0 +1,23 @@
+@import "../../variables.scss";
+
+.app-header {
+  @extend %row-nowrap;
+  background-color: mix($black, $mineshaft-gray, 50);
+  height: 3rem;
+  border-left: 1px solid $black;
+  flex: 0 0 auto;
+  align-items: center;
+
+  &__content {
+    @extend %row-nowrap;
+    flex: 1 0 auto;
+    height: 100%;
+    overflow-x: auto;
+  }
+
+  &__actions {
+    @extend %row-nowrap;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+}

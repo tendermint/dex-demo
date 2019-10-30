@@ -1,0 +1,30 @@
+@import "../../../variables";
+
+.dropdown {
+  @extend %column-nowrap;
+  position: relative;
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2000;
+  }
+
+  &__items {
+    @extend %column-nowrap;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 3000;
+  }
+
+  &__item {
+    @extend %clickable;
+    padding: .5rem;
+    color: $white;
+    user-select: none;
+  }
+}

@@ -1,0 +1,164 @@
+@import "../../../variables";
+
+.deposit {
+  width: 28.5rem;
+
+  &__header {
+    @extend %column-nowrap;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    background-color: rgba($white, .05);
+    border-bottom: 1px solid $black;
+  }
+
+  &__dropdown-label {
+    color: rgba($white, .5);
+    font-size: .75rem;
+  }
+
+  &__dropdown {
+    flex: 1 1 auto;
+    margin-top: .5rem;
+  }
+
+  .dropdown {
+    border: 1px solid rgba($white, .1);
+    border-radius: 3px;
+    font-size: .875rem;
+
+    &--opened {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &__items {
+      background-color: $black;
+      border: 1px solid rgba($white, .15);
+      border-top: none;
+      left: -1px;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      max-height: 11.875rem;
+      overflow-y: auto;
+    }
+
+    &__item {
+      @extend %row-nowrap;
+      align-items: center;
+      font-size: 0.875rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  &__body {
+    padding: 1rem 1.5rem;
+    background-color: rgba($white, .05);
+    border-bottom: 1px solid $black;
+
+    &--connect {
+      text-align: center;
+    }
+
+    &__hero {
+      @extend %row-nowrap;
+      justify-content: center;
+      margin: 4rem 0;
+    }
+
+    &__icon-wrapper {
+      @extend %row-nowrap;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid $shamrock-green;
+      width: 7.5rem;
+      height: 7.5rem;
+      border-radius: 50%;
+    }
+
+    &__label {
+      color: rgba($white, .5);
+      font-size: .75rem;
+    }
+
+    &__value {
+      margin-top: .5rem;
+    }
+
+    &__text {
+      padding: .5rem 0;
+      font-size: .875rem;
+      line-height: 1.25rem;
+      color: rgba($white, .8);
+      font-weight: 300;
+    }
+
+    &__help-text {
+      font-size: .75rem;
+      font-weight: 300;
+      color: rgba($white, .5);
+    }
+  }
+
+  &__funding-sources {
+    display: flex;
+    flex-flow: row wrap;
+    margin-top: .5rem;
+  }
+
+  &__funding-source {
+    @extend %clickable;
+    @extend %column-nowrap;
+
+    align-items: center;
+    //flex: 0 0 25%;
+    padding: 1rem;
+    width: 6.5rem;
+
+    &__label {
+      font-size: .875rem;
+      margin-left: 1rem;
+    }
+  }
+
+  &__source-address {
+    margin-top: .5rem;
+    border: 1px solid rgba($white, .1);
+    border-radius: 3px;
+    padding: .5rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: .875rem;
+    line-height: 1.5rem;
+  }
+
+  &__amount-input {
+    margin-top: .5rem;
+    font-family: 'Roboto Mono', monospace;
+    border: 1px solid rgba($white, .1);
+    border-radius: 3px;
+
+    .input__wrapper {
+      padding: .5rem;
+      background-color: transparent;
+    }
+
+    .input__input {
+      font-family: 'Roboto Mono', monospace;
+      font-size: .875rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  &__buttons {
+    margin-top: 1rem;
+    text-align: right;
+  }
+
+  &__footer {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  &--done {
+    text-align: center;
+  }
+}

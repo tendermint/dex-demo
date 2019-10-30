@@ -1,0 +1,272 @@
+@import "../../../variables";
+
+button {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background-color: transparent;
+  border: none;
+}
+
+.button {
+  @extend %clickable;
+  font-size: 1rem;
+  padding: .75rem 1.25rem;
+  font-family: 'Roboto', sans-serif;
+
+  &--primary {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: rgba($regal-blue, .8);
+    color: $white;
+    border: 1px solid $regal-blue;
+    transition:
+            background-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus {
+      background-color: rgba($regal-blue, .9);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($regal-blue, .9);
+    }
+
+    &:active {
+      background-color: rgba($regal-blue, .7);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: rgba($regal-blue, .8);
+        box-shadow: none;
+      }
+    }
+  }
+
+  &--secondary {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: transparent;
+    color: rgba($white, .5);
+    border: 1px solid rgba($white, .25);
+    transition:
+            background-color 150ms ease-in-out,
+            border-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus {
+      background-color: rgba($white, .1);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($white, .1);
+    }
+
+    &:active {
+      background-color: rgba($black, .1);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: rgba($shamrock-green, .5);
+        box-shadow: none;
+      }
+    }
+  }
+
+  &--secondary-reverse {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: transparent;
+    color: rgba($black, .3);
+    font-weight: 500;
+    border: 2px solid rgba($black, .2);
+    transition:
+            background-color 150ms ease-in-out,
+            border-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus,
+    &:hover {
+      background-color: rgba($black, .1);
+      color: rgba($black, .4);
+    }
+
+    &:active {
+      background-color: rgba($black, .2);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+  }
+
+  &--buy-btn {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: rgba($shamrock-green, .5);
+    color: $white;
+    transition:
+            background-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus {
+      background-color: rgba($shamrock-green, .8);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($shamrock-green, .8);
+      box-shadow: 0 0 4px 4px rgba($black, .8);
+    }
+
+    &:active {
+      background-color: rgba($shamrock-green, .4);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+      color: rgba($white, .7);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: rgba($shamrock-green, .5);
+        box-shadow: none;
+      }
+    }
+  }
+
+  &--sell-btn {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: rgba($persimmon-red, .5);
+    color: rgba($white, .8);
+    transition:
+            background-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus {
+      background-color: rgba($persimmon-red, .8);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($persimmon-red, .8);
+      box-shadow: 0 0 4px 4px rgba($black, .8);
+    }
+
+    &:active {
+      background-color: rgba($persimmon-red, .4);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+      color: rgba($white, .7);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: rgba($persimmon-red, .5);
+        box-shadow: none;
+      }
+    }
+  }
+
+  &--link {
+    padding: 0;
+    color: $white;
+    text-decoration: underline;
+    transition: color 150ms ease-in-out;
+
+    &:focus {
+      background-color: transparent;
+      box-shadow: none;
+      color: rgba($regal-blue, 1);
+    }
+
+    &:hover {
+      background-color: transparent;
+      box-shadow: none;
+      color: rgba($regal-blue, 1);
+    }
+
+    &:active {
+      background-color: transparent;
+      box-shadow: none;
+      color: rgba($regal-blue, .8);
+    }
+  }
+
+  &--alert {
+    border-radius: 2px;
+    padding: .5rem 1rem;
+    font-size: .75rem;
+    background-color: rgba($persimmon-red, .8);
+    color: $white;
+    border: 1px solid $persimmon-red;
+    transition:
+            background-color 150ms ease-in-out,
+            color 150ms ease-in-out,
+            box-shadow 150ms ease-in-out;
+
+    &:focus {
+      background-color: rgba($persimmon-red, .9);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($persimmon-red, .9);
+    }
+
+    &:active {
+      background-color: rgba($persimmon-red, .7);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+    }
+
+    &:disabled {
+      &:focus,
+      &:hover,
+      &:active {
+        background-color: rgba($persimmon-red, .8);
+        box-shadow: none;
+      }
+    }
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: .5;
+  }
+
+  &--loading {
+    position: relative;
+    @extend %loading-placeholder;
+    &:after {
+      background: linear-gradient(90deg, rgba($white, 0), rgba($white, .25), rgba($white, 0));
+    }
+  }
+}

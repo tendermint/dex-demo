@@ -1,0 +1,13 @@
+@import "../../../variables";
+.icon {
+  width: 1rem;
+  height: 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  &__tabbale {
+    @extend %tappable-icon;
+    outline: none;
+  }
+}

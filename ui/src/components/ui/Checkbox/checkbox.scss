@@ -1,0 +1,79 @@
+@import "../../../variables";
+
+.checkbox {
+  @extend %row-nowrap;
+  align-items: flex-start;
+
+  &--clickable {
+    .checkbox {
+      &__input {
+        input {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  &__input {
+    flex: 0 0 auto;
+    position: relative;
+    height: .75rem;
+    width: .75rem;
+    padding: .125rem;
+    border-radius: .25rem;
+    border: 2px solid mix($black, $white, 20);
+    transition:
+      background-color 200ms ease-in-out,
+      border 100ms ease-out;
+
+    input {
+      position: relative;
+      z-index: 200;
+      margin: 0;
+      height: 1rem;
+      width: 1rem;
+      opacity: 0;
+      top: -.125rem;
+      left: -.125rem;
+    }
+
+    &:before {
+      position: absolute;
+      display: block;
+      content: '';
+      width: calc(100% - .25rem);
+      height: calc(100% - .25rem);
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      margin: .125rem;
+    }
+  }
+
+  &__content {
+    flex: 1 1 auto;
+    margin-left: .75rem;
+  }
+
+  &--checked {
+    .checkbox {
+      &__input {
+        background-color: $regal-blue;
+        border: 2px solid $regal-blue;
+        &:before {
+          background-image: url('../../../assets/icons/check-heavy-white.svg');
+        }
+      }
+    }
+  }
+
+  &--clickable {
+    &:focus-within {
+      .checkbox {
+        &__input {
+          box-shadow: 0 0 0 2px rgba($regal-blue, .5);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,109 @@
+.exchange__order-form {
+  grid-column-start: 2;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 4;
+
+  &__error-message {
+    color: $persimmon-red;
+    text-align: center;
+    padding: .25rem 0;
+    font-size: .75rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: row nowrap;
+
+    &__buy,
+    &__sell {
+      @extend %column-nowrap;
+      position: relative;
+      flex: 1 1 auto;
+      width: 0;
+      color: rgba($white, .5);
+      font-weight: 300;
+      padding: 1rem;
+
+      .input {
+        &__label {
+          width: 3rem;
+        }
+      }
+
+      .input + .input {
+        margin-top: .5rem;
+      }
+    }
+
+    &__divider {
+      height: 100%;
+      width: 2px;
+      background-color: rgba($black, .5);
+    }
+
+    &__title {
+      color: $white;
+      font-weight: 400;
+      margin-bottom: .75rem;
+      display: none;
+    }
+
+    &__selectors {
+      @extend %row-nowrap;
+      background-color: transparent;
+      padding: 0;
+      width: calc(100% - 12px);
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &:focus-within {
+        background-color: transparent;
+        box-shadow: none;
+      }
+
+      &__selector {
+        @extend %row-nowrap;
+        @extend %clickable;
+        background-color: rgba($white, .02);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 auto;
+        width: 0;
+        padding: .25rem .5rem;
+        border-radius: 2px;
+        font-size: .75rem;
+      }
+
+      &__selector + &__selector {
+        margin-left: 4px;
+      }
+    }
+
+
+    &__footer {
+      @extend %column-nowrap;
+      flex: 1 1 auto;
+      justify-content: flex-end;
+
+      .button {
+        width: 100%;
+      }
+    }
+  }
+
+  &__spinner {
+    @extend %row-nowrap;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba($black, .65);
+  }
+}

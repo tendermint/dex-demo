@@ -1,0 +1,95 @@
+version: 2.1
+
+executors:
+  golang:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/tendermint/dex-demo
+  docs:
+    docker:
+      - image: tendermintdev/jq_curl
+    environment:
+      AWS_REGION: us-east-1
+
+commands:
+  make:
+    parameters:
+      description:
+        type: string
+      target:
+        type: string
+    steps:
+      - attach_workspace:
+          at: /tmp/bin
+      - restore_cache:
+          name: "Restore source code cache"
+          keys:
+            - go-src-v1-{{ .Revision }}
+      - checkout
+      - restore_cache:
+          name: "Restore go modules cache"
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
+      - run:
+          name: << parameters.description >>
+          command: |
+            export BINDIR=/tmp/bin
+            make << parameters.target >>
+
+jobs:
+  build:
+    executor: golang
+    steps:
+      - checkout
+      - restore_cache:
+          name: "Restore go modules cache"
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
+      - run:
+          name: Cache go modules
+          command: go mod download
+      - run:
+          name: Build
+          command: make install
+      - run:
+          name: "Git garbage collection"
+          command: git gc
+      - save_cache:
+          name: "Save go modules cache"
+          key: go-mod-v1-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - save_cache:
+          name: "Save source code cache"
+          key: go-src-v1-{{ .Revision }}
+          paths:
+            - ".git"
+      - run:
+          command: |
+            mkdir -p /tmp/bin
+            cp -r /go/bin/* /tmp/bin
+      - persist_to_workspace:
+          root: "/tmp/bin"
+          paths:
+            - "."
+  test:
+    executor: golang
+    steps:
+      - checkout
+      - make:
+          target: test-unit
+          description: "Run test suite"
+
+workflows:
+  version: 2
+  test-suite:
+    jobs:
+      - build:
+          # filters here are needed to enable this job also for tags
+          filters:
+            tags:
+              only:
+                - /^v.*/
+      - test:
+          requires:
+            - build

@@ -1,0 +1,24 @@
+@import "../../../variables";
+
+.table {
+  @extend %column-nowrap;
+
+  &__header-row,
+  &__row {
+    @extend %row-nowrap;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  &__header {
+    padding: .5rem 1rem;
+    flex: 1 1 auto;
+    width: 0;
+  }
+
+  &__cell {
+    padding: .5rem 1rem;
+    flex: 1 1 auto;
+    width: 0;
+  }
+}

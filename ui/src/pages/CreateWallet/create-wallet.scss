@@ -1,0 +1,85 @@
+@import "../../variables";
+
+.create-wallet {
+  @extend %column-nowrap;
+  position: relative;
+  margin-top: 2rem;
+  background-color: mix($white, $regal-blue, 95);
+  border-radius: .25rem;
+  padding: 1.5rem 3rem;
+  box-shadow: 0 2px 4px 2px rgba($black, .35);
+  width: 20rem;
+  color: $black;
+
+  &__title {
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: rgba($black, .8);
+    text-align: center;
+  }
+
+  &__info-text {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba($texas-rose-orange, .15);
+    border-radius: 3px;
+    padding: .5rem 1rem;
+    margin-top: 1rem;
+    font-size: .675rem;
+    font-family: "Roboto Mono", monospace;
+    color: mix($black, $texas-rose-orange, 30);
+  }
+
+  &__form {
+    @extend %column-nowrap;
+    width: 100%;
+    align-items: center;
+
+    .input {
+      @extend %column-nowrap;
+      width: calc(100% - 1rem);
+      margin-top: 1rem;
+
+      &__label {
+        width: 100%;
+        flex: 0 0 auto;
+        color: rgba($black, .5);
+        font-weight: 500;
+      }
+
+      &__wrapper {
+        @extend %row-nowrap;
+        align-items: center;
+        width: 100%;
+        flex: 0 0 auto;
+        margin-top: .25rem;
+        background-color: rgba($black, .1) !important;
+      }
+
+
+      &__input {
+        color: $black;
+        font-size: 1rem;
+        padding: .5rem;
+      }
+    }
+  }
+
+  &__acknowledgement {
+    margin-top: 1rem;
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1rem;
+    color: rgba($black, .9);
+  }
+
+  &__actions {
+    margin-top: 2rem;
+    text-align: right;
+
+    .button {
+      overflow: hidden;
+      font-size: .875rem;
+    }
+  }
+}

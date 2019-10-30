@@ -1,0 +1,69 @@
+@import "../../variables";
+
+.exchange-header {
+  @extend %row-nowrap;
+  color: $white;
+  flex: 0 0 auto;
+
+  &__item {
+    @extend %column-nowrap;
+    justify-content: center;
+    padding: .625rem;
+
+    &__label {
+      @extend %ellipsify;
+      flex: 0 0 auto;
+      font-size: .625rem;
+      text-transform: uppercase;
+      color: rgba($white, .25);
+    }
+
+    &__value {
+      @extend %ellipsify;
+      font-size: .75rem;
+      font-family: 'Roboto Mono', monospace;
+      padding-top: .25rem;
+      flex: 1 1 auto;
+      height: 0;
+    }
+
+    &--positive {
+      .exchange-header {
+        &__item {
+          &__value {
+            color: $shamrock-green;
+          }
+        }
+      }
+    }
+
+    &--negative {
+      .exchange-header {
+        &__item {
+          &__value {
+            color: $persimmon-red;
+          }
+        }
+      }
+    }
+
+    &--loading {
+      padding: .625rem .625rem .375rem .625rem;
+
+      .exchange-header {
+        &__item {
+          &__value {
+            position: relative;
+            margin-top: .375rem;
+            background-color: rgba($white, .05);
+            border-radius: .125rem;
+
+            &:after {
+              @extend %loading-placeholder;
+            }
+          }
+        }
+      }
+    }
+  }
+}

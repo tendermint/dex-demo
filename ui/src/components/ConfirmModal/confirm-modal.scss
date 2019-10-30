@@ -1,0 +1,49 @@
+@import "../../variables";
+
+.confirm-modal {
+  .modal {
+    border-radius: 4px;
+
+    &__container {
+      margin-top: -8rem;
+      flex: 0 0 auto;
+      width: 24rem;
+      background-color: $white;
+      border-radius: 8px;
+      box-shadow: 0 4px 4px 4px rgba($black, .2);
+    }
+
+    &__overlay {
+      background-color: rgba($black, .8);
+    }
+  }
+
+  &__container {
+    @extend %column-nowrap;
+    height: 100%;
+    border-radius: 4px;
+    padding: 1rem 2rem;
+  }
+
+  &__title {
+    font-weight: 500;
+    font-size: 1.125rem;
+    text-align: center;
+  }
+
+  &__content {
+    font-size: .875rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: rgba($black, .75);
+  }
+
+  &__actions {
+    @extend %row-nowrap;
+    justify-content: space-between;
+
+    .button {
+      font-size: .875rem;
+    }
+  }
+}

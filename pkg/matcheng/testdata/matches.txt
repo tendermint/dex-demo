@@ -1,0 +1,145 @@
+# base case
+b 1 10
+b 2 10
+b 3 10
+a 2 10
+a 3 10
+a 4 10
+c 2
+e 2 5 5
+e 3 5 5
+e 4 10 0
+
+# base case
+b 10 100
+b 20 100
+b 30 100
+b 40 100
+a 30 100
+a 40 100
+a 50 100
+a 60 100
+c 30
+e 3 50 50
+e 4 50 50
+e 5 100 0
+
+# asks dominate bids and are rationed
+b 1 10
+b 2 10
+b 3 10
+a 2 33
+a 3 33
+a 4 33
+c 2
+e 2 10 0
+e 3 10 0
+e 4 20 13
+
+# bids dominate asks and are rationed
+b 1 33
+b 2 33
+a 2 10
+a 3 10
+a 4 10
+c 2
+e 2 10 23
+e 3 10 0
+
+# asks dominate bids and require rounding during ration
+b 10 100
+b 15 100
+b 20 100
+a 17 185
+c 18
+e 3 100 0
+e 4 100 85
+
+# asks dominate bids and require rounding during ration across multiple orders
+b 17 185
+a 10 100
+a 15 100
+a 20 100
+c 16
+e 1 185 0
+e 2 93 7
+e 3 92 8
+
+# bids dominate asks and cannot find perfect midpoint during ration
+b 10 100
+b 15 100
+b 18 100
+a 17 185
+c 18
+e 3 100 0
+e 4 100 85
+
+# bid and ask orders with the same price are correctly aggregated
+b 10 100
+b 15 50
+b 15 50
+b 20 100
+a 15 50
+a 15 50
+a 20 100
+a 25 100
+c 15
+e 2 25 25
+e 3 25 25
+e 4 50 50
+e 5 50 0
+e 6 50 0
+
+# non-divisible single-digit orders
+b 1 1
+b 2 1
+b 3 1
+a 2 1
+a 3 1
+a 4 1
+c 2
+e 3 1 0
+e 4 1 0
+
+# non-divisible single-digit orders - multiple price
+b 1 1
+b 2 1
+b 2 1
+a 2 1
+a 3 1
+a 4 1
+c 2
+e 2 1 0
+e 4 1 0
+
+# one single ask
+b 1 1
+b 2 2
+a 2 1
+c 2
+e 2 1 1
+e 3 1 0
+
+# one single bid
+b 3 1
+a 3 1
+a 4 1
+c 2
+e 1 1 0
+e 2 1 0
+
+# bids massively dominate asks
+b 1 1
+b 2 100000
+a 2 1
+c 2
+e 2 1 99999
+e 3 1 0
+
+# asks massively dominate bids
+b 2 1
+a 2 100000
+a 3 1
+c 2
+e 1 1 0
+e 2 1 99999

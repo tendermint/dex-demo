@@ -1,0 +1,12 @@
+export const HOME: string = "/";
+export const EXCHANGE: string = "/exchange";
+export const WALLET: string = "/wallet";
+export const CONNECT_WALLET: string = "/wallet/connect";
+export const CONNECT_WALLET__HARDWARE: string = "/wallet/connect/hardware";
+export const CONNECT_WALLET__MOBILE: string = "/wallet/connect/mobile";
+export const CONNECT_WALLET__SOFTWARE: string = "/wallet/connect/software";
+export const CREATE_WALLET__SOFTWARE: string = "/wallet/create/software";
+export const CONFIRM_SEEDPHRASE_BACKUP__SOFTWARE: string = "/wallet/create/software/confirm";
+export const DEPOSIT: string = "/wallet/deposit";
+export const WITHDRAWAL: string = "/wallet/withdrawal";
+export const TRANSFER: string = "/wallet/transfer";

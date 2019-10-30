@@ -1,0 +1,134 @@
+@import "../../../variables";
+
+.wallet {
+  @extend %row-nowrap;
+  color: $white;
+  height: 100%;
+
+  &__content {
+    @extend %column-nowrap;
+    flex: 1 1 auto;
+    width: 0;
+    border-top: 1px solid $black;
+    background-color: mix($black, $mineshaft-gray, 60);
+
+    &__header {
+      @extend %row-nowrap;
+      align-items: center;
+      margin: 6rem 4rem 0;
+      flex: 0 0 auto;
+
+      &__arrow {
+        margin: 0 .5rem;
+      }
+    }
+
+    &__subheader {
+      @extend %column-nowrap;
+      margin: 1rem 4rem 0;
+
+      &__address-group {
+        @extend %column-nowrap;
+
+        &__label {
+          color: rgba($white, .35);
+          font-size: .75rem;
+        }
+
+        &__value {
+          @extend %row-nowrap;
+          align-items: center;
+          font-family: 'Roboto Mono', monospace;
+          font-size: .875rem;
+          padding: .125rem 0;
+          position: relative;
+          color: rgba($white, .75);
+
+          &--loading {
+            @extend %loading-placeholder;
+            margin-top: .125rem;
+            height: .75rem;
+            width: 24rem;
+            overflow: hidden;
+            border-radius: .125rem;
+            background-color: rgba($white, .01);
+
+            .icon {
+              display: none;
+            }
+          }
+
+          .icon {
+            @extend %tappable-icon;
+            @extend %clickable;
+            outline: none;
+            opacity: .5;
+            margin-left: .75rem;
+            height: .875rem;
+          }
+
+          .tooltip {
+            &__content {
+              left: 4px;
+            }
+          }
+        }
+      }
+
+      &__actions {
+        margin: 1rem 0;
+      }
+    }
+
+    .module {
+      &__content {
+        @extend %column-nowrap;
+      }
+
+      &__header {
+        button {
+          padding: 0 1rem !important;
+        }
+      }
+    }
+
+    &__table {
+      flex: 1 1 auto;
+      margin: 1.25rem 4rem 4rem;
+      box-shadow: 0 2px 2px 2px rgba($black, .2);
+
+      .table {
+        flex: 1 1 auto;
+        &__header-row {
+          color: rgba($white, .25);
+          font-size: .75rem;
+          border-bottom: 1px solid $black;
+          background-color: mix($black, $mineshaft-gray, 60);
+          font-weight: 500;
+        }
+
+        &__row {
+          @extend %clickable;
+          font-size: .75rem;
+          border-bottom: 1px solid $black;
+          flex: 0 0 auto;
+          padding: .125rem 0;
+          color: rgba($white, .625);
+        }
+      }
+
+      &__body {
+        @extend %column-nowrap;
+        flex: 1 1 auto;
+        height: 0;
+        overflow-y: auto;
+        background-color: mix($black, $mineshaft-gray, 40);
+      }
+    }
+
+    &__body {
+      flex: 1 1 auto;
+      margin: 3rem 4rem 6rem;
+    }
+  }
+}

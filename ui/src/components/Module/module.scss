@@ -1,0 +1,62 @@
+@import "../../variables";
+
+.module {
+  display: flex;
+  flex-flow: column nowrap;
+  border-radius: 3px;
+  background-color: $mineshaft-gray;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    flex: 0 0 auto;
+    height: 1.875rem;
+    background-color: mix($black, $mineshaft-gray, 20);
+
+    &__button {
+      @extend %row-nowrap;
+      align-items: center;
+      color: rgba($white, .5);
+      font-size: .75rem !important;
+      transition:
+              background-color 50ms ease-in-out,
+              color 50ms ease-in-out;
+      height: calc(100% - 8px);
+      padding: 0 .5rem !important;
+      margin: .25rem 0 .25rem .25rem;
+      border-radius: 4px;
+      font-weight: 500;
+
+      &:hover {
+        color: $regal-blue;
+        background-color: rgba($regal-blue, .25) !important;
+      }
+
+      &:active {
+        color: $regal-blue;
+        background-color: rgba($regal-blue, .5) !important;
+      }
+    }
+
+    &__button.button--active {
+      color: $regal-blue;
+      background-color: rgba($regal-blue, .25) !important;
+      cursor: default;
+      font-weight: 500;
+
+      &:hover,
+      &:focus {
+        background-color: rgba($regal-blue, .25) !important;
+      }
+    }
+  }
+
+  &__content {
+    position: relative;
+    flex: 1 1 auto;
+    height: 0;
+    background-color: rgba($black, .5);
+  }
+}

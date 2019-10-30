@@ -1,0 +1,15 @@
+{
+  "name": "dex-demo-embedded-openapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/tendermint/dex-demo",
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "swagger-nodegen-cli": "^3.0.8"
+  }
+}

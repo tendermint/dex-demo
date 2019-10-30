@@ -1,0 +1,35 @@
+@import "../../variables";
+
+%cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+#modal-root {
+
+}
+
+.modal {
+  @extend %cover;
+  @extend %row-nowrap;
+  align-items: center;
+  justify-content: center;
+
+  &__root {
+    @extend %cover;
+    z-index: 200;
+  }
+
+  &__container {
+    position: relative;
+  }
+
+  &__overlay {
+    @extend %cover;
+    background-color: rgba($black, .25);
+  }
+}

@@ -1,0 +1,27 @@
+@import "../../../variables";
+
+.pill {
+  @extend %row-nowrap;
+  display: inline-flex;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  font-size: .675rem;
+  position: relative;
+  overflow: hidden;
+
+  &--success {
+    color: $shamrock-green;
+    background-color: rgba($shamrock-green, .25);
+  }
+
+  &--pending {
+    @extend %loading-placeholder;
+    color: rgba($white, .5);
+    background-color: rgba($white, .25);
+  }
+
+  &--need_attention {
+    color: $texas-rose-orange;
+    background-color: rgba($texas-rose-orange, .25);
+  }
+}

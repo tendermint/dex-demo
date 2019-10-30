@@ -1,0 +1,804 @@
+openapi: 3.0.0
+info:
+  title: Dex Demo Embedded REST API
+  version: 0.0.1
+
+servers:
+  - url: https://testnet.serverfuse.tools/api/v1/
+    description: Long-lived testnet.
+  - url: https://localnet.dex-demo/api/v1/
+    description: URL to the REST API as embedded within the DEX demo client.
+
+tags:
+  - name: auth
+    description: Authentication
+  - name: exchange
+    description: Exchange
+  - name: user
+    description: User
+  - name: market
+    description: Market
+
+security:
+  - SessionCookie: []
+  - CSRFToken: []
+
+paths:
+  /auth/login:
+    post:
+      summary: Logs a user in.
+      security:
+        - CSRFToken: []
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '204':
+          description: User successfully logged in. The session ID is returned in a cookie.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: uex_session=12345abc;
+        '403':
+          description: Authentication failed.
+
+  /auth/logout:
+    post:
+      summary: Logs a user out.
+      tags:
+        - auth
+      responses:
+        '204':
+          description: User successfully logged out.
+
+  /auth/change_password:
+    post:
+      summary: Changes a user's password.
+      description: All sessions using the previous password will be logged out.
+      tags:
+        - auth
+      security:
+        - CSRFToken: []
+        - SessionCookie: []
+        - OTP: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                new_password:
+                  type: string
+      responses:
+        '204':
+          description: Password successfully changed.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: uex_session=12345abc;
+        '403':
+          description: Invalid password.
+
+  /exchange/orders:
+    post:
+      summary: Posts an order. Funds will be immediately debited.
+      tags:
+        - exchange
+      security:
+        - CSRFToken: []
+        - SessionCookie: []
+        - OTP: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreationRequest'
+      responses:
+        '204':
+          description: Order successfully posted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreationResponse'
+    put:
+      summary: Modifies an existing order. Funds will immediately debited if the quantity increases, or credited if the quantity decreases.
+      tags:
+        - exchange
+      security:
+        - CSRFToken: []
+        - SessionCookie: []
+        - OTP: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Order successfully modified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreationResponse'
+
+  /exchange/orders/{order_id}:
+    get:
+      summary: Gets an order by its ID.
+      tags:
+        - exchange
+      parameters:
+        - in: path
+          name: order_id
+          schema:
+            type: string
+          required: true
+          description: Numeric ID of the order.
+      responses:
+        '200':
+          description: Returns the looked-up order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithFills'
+        '404':
+          description: Order not found.
+    delete:
+      summary: Cancels an order by its ID.
+      tags:
+        - exchange
+      security:
+        - CSRFToken: []
+        - SessionCookie: []
+        - OTP: []
+      parameters:
+        - in: path
+          name: order_id
+          schema:
+            type: string
+          required: true
+          description: Numeric ID of the order.
+      responses:
+        '200':
+          description: Order successfully cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockInclusionResponse'
+        '403':
+          description: Order is not owned by current user.
+        '422':
+          description: Order is already cancelled.
+        '404':
+          description: Order not found.
+
+  /exchange/orders/cancel:
+    post:
+      summary: Cancels a group of orders.
+      tags:
+        - exchange
+      security:
+        - CSRFToken: []
+        - SessionCookie: []
+        - OTP: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Bulk cancel completed. Some response may have failed; see the response body itself to deal with individual errors.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/BlockInclusionResponse'
+                    - $ref: '#/components/schemas/BlockInclusionFailure'
+
+  /user/balance:
+    get:
+      summary: Returns the user's balance across all supported chains.
+      tags:
+        - user
+      responses:
+        '200':
+          description: The user's balances.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+
+  /user/orders:
+    get:
+      summary: Gets all orders created by this user.
+      tags:
+        - user
+      parameters:
+        - $ref: '#/components/parameters/Start'
+      responses:
+        '200':
+          description: The user's orders.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_id:
+                    type: string
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderWithFills'
+
+  /user/fills:
+    get:
+      summary: Gets all fills relevant to this user.
+      tags:
+        - user
+      parameters:
+        - $ref: '#/components/parameters/StartBlock'
+        - $ref: '#/components/parameters/EndBlock'
+      responses:
+        '200':
+          description: The user's fills.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fills:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Fill'
+
+  /user/send:
+    post:
+      summary: Transfers Funds
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                amount:
+                  type: string
+                asset_id:
+                  type: string
+      responses:
+        '200':
+          description: Status of the transfer.
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/BlockInclusionResponse'
+
+  /user/withdrawals:
+    post:
+      summary: Initiates a withdrawal of a cleared asset.
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                beneficiary:
+                  type: string
+                  description: The address of the recipient who will unlock funds on the relay chain. Hex-encoded.
+                asset_id:
+                  type: string
+                  description: The ID of the cleared asset to be withdrawn.
+                quantity:
+                  type: string
+                  description: The amount of the cleared asset to withdraw, as represented in the asset's base units.
+      responses:
+        '200':
+          description: Withdrawal successfully initiated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Withdrawal'
+    get:
+      summary: Gets the user's list of withdrawals.
+      tags:
+        - user
+      responses:
+        '200':
+          description: List of withdrawals.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  owner:
+                    type: string
+                  withdrawals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Withdrawal'
+
+  /user/deposits:
+    post:
+      summary: Registers a relay chain deposit on the DEX demo.
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset_id:
+                  type: string
+                  description: The asset ID deposited.
+                quantity:
+                  type: string
+                  description: The amount of the asset deposited.
+                relay_chain_id:
+                  type: string
+                  enum: ['ETH']
+                relay_chain_transaction_hash:
+                  type: string
+                  description: The transaction hash of the deposit on the relay chain.
+      responses:
+        '200':
+          description: Deposit successfully initiated.
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/BlockInclusionResponse'
+
+  /markets/{market_id}/candles:
+    get:
+      summary: Gets candlestick prices for the provided market.
+      tags:
+        - market
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          description: The ID of the market to fetch candles for.
+          schema:
+            type: string
+        - in: query
+          name: start
+          description: ISO8601 date of when to start the candle query.
+          schema:
+            type: string
+        - in: query
+          name: end
+          description: ISO8601 date of when to end the candle query.
+          schema:
+            type: string
+        - in: query
+          name: granularity
+          description: Granularity of candle data to return.
+          schema:
+            type: string
+            enum: ['1m', '5m', '15m', '60m', '1d']
+      responses:
+        '200':
+          description: Candle data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandlestickResponse'
+
+  /markets/{market_id}/spread/{block_number}:
+    get:
+      summary: Gets the batch auction state for the provided market ID and the block number.
+      tags:
+        - market
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: block_number
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The batch state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spread'
+
+  /markets/{market_id}/book:
+    get:
+      summary: Gets all open order at latest block by market
+      tags:
+        - market
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The batch state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spread'
+
+  /markets/{market_id}/batches/{block_number}:
+    get:
+      summary: Gets all executed batches at a block (or latest)
+      tags:
+        - market
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: block_number
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The batch state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchesResponse'
+
+  /markets/{market_id}/daily:
+    get:
+      summary: Daily Price Stats
+      tags:
+        - market
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The stats.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pair:
+                    type: string
+                  volume:
+                    type: string
+                  change:
+                    type: string
+                  last:
+                    type: string
+                  high:
+                    type: string
+                  low:
+                    type: string
+
+
+  /markets:
+    get:
+      summary: Lists all markets.
+      tags:
+        - market
+      responses:
+        '200':
+          description: List of markets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Market'
+
+components:
+  securitySchemes:
+    SessionCookie:
+      type: apiKey
+      in: cookie
+      name: uex_session
+
+    CSRFToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+
+    OTP:
+      type: apiKey
+      in: header
+      name: X-OTP-Token
+
+  parameters:
+    StartId:
+      in: query
+      name: start_id
+      required: false
+      description: The smallest ID to include in this request.
+      schema:
+        type: string
+    EndId:
+      in: query
+      name: end_id
+      required: false
+      description: The largest ID to include in this request.
+      schema:
+        type: string
+    StartBlock:
+      in: query
+      name: start_block
+      required: false
+      description: The block to start counting from.
+      schema:
+        type: integer
+    EndBlock:
+      in: query
+      name: end_block
+      required: false
+      description: The block to end counting at.
+      schema:
+        type: integer
+    Start:
+      in: query
+      name: start
+      required: false
+      description: The ID to begin counting at.
+      schema:
+        type: integer
+
+  schemas:
+    BlockInclusionResponse:
+      type: object
+      properties:
+        block_inclusion:
+          type: object
+          properties:
+            block_number:
+              type: string
+            transaction_hash:
+              type: string
+            block_timestamp:
+              type: number
+
+    BlockInclusionFailure:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            codespace:
+              type: integer
+            code:
+              type: integer
+
+    BatchesResponse:
+      allOf:
+        - $ref: '#/components/schemas/BlockInclusionResponse'
+        - $ref: '#/components/schemas/BatchInfo'
+    BatchInfo:
+      type: object
+      properties:
+        price:
+          type: string
+        amount:
+          type: string
+
+    OrderCreationRequest:
+      type: object
+      properties:
+        market_id:
+          type: string
+        direction:
+          type: string
+          enum: ['BID', 'ASK']
+        price:
+          type: string
+        quantity:
+          type: string
+        type:
+          type: string
+          enum: ['MARKET', 'LIMIT']
+        time_in_force:
+          type: integer
+
+    OrderCreationResponse:
+      allOf:
+        - $ref: '#/components/schemas/BlockInclusionResponse'
+        - $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        market_id:
+          type: string
+        direction:
+          type: string
+          enum: ['BID', 'ASK']
+        price:
+          type: string
+        quantity:
+          type: string
+        status:
+          type: string
+          enum: ['FILLED', 'CANCELLED', 'OPEN']
+        type:
+          type: string
+          enum: ['MARKET', 'LIMIT']
+        time_in_force:
+          type: integer
+
+    OrderWithFills:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+      properties:
+        quantity_filled:
+          type: string
+
+    Balance:
+      type: object
+      properties:
+        balances:
+          type: array
+          items:
+            type: object
+            properties:
+              asset_id:
+                type: string
+              name:
+                type: string
+              symbol:
+                type: string
+              liquid:
+                type: string
+                description: Amount of this asset available for trading.
+              at_risk:
+                type: string
+                description: Amount of this asset current on the order book.
+
+    Fill:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BlockInclusionResponse'
+      properties:
+        quantity_filled:
+          type: string
+        quantity_unfilled:
+          type: string
+        direction:
+          type: string
+          enum: ['BID', 'ASK']
+        order_id:
+          type: string
+        pair:
+          type: string
+        price:
+          type: string
+        owner:
+          type: string
+
+    CandlestickResponse:
+      type: object
+      properties:
+        market_id:
+          type: string
+        candles:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                description: "ISO8601"
+              open:
+                type: string
+              close:
+                type: string
+              high:
+                type: string
+              low:
+                type: string
+
+    Spread:
+      type: object
+      properties:
+        block_number:
+          type: string
+        market_id:
+          type: string
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceQuantity'
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceQuantity'
+
+    PriceQuantity:
+      type: object
+      properties:
+        price:
+          type: string
+        quantity:
+          type: string
+
+    Market:
+      type: object
+      properties:
+        id:
+          type: string
+        pair:
+          type: string
+        base_asset_id:
+          type: string
+        quote_asset_id:
+          type: string
+
+    Withdrawal:
+      type: object
+      properties:
+        beneficiary:
+          type: string
+          description: The address of the recipient who will unlock funds on the remote chain. Hex-encoded.
+        merkle_proof:
+          type: string
+          description: The Merkle proof required to unlock funds on the relay chain.
+        merkle_leaf:
+          type: string
+          description: The Merkle leaf hash of the withdrawal.
+        asset_id:
+          type: string
+          description: The ID of the cleared asset to be withdrawn.
+        burn_id:
+          type: string
+          description: The ID of the underlying burn used to initiate this withdrawal.
+        quantity:
+          type: string
+          description: The amount of the cleared asset to withdraw, as represented in the asset's base units.
+        initiated_block:
+          type: number
+          description: The block number when this withdrawal was initiated.
+        owner:
+          type: string
+          description: The address whose funds are being withdrawn.

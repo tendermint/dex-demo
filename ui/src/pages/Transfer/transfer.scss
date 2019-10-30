@@ -1,0 +1,103 @@
+@import "../../variables";
+
+.transfer {
+  flex: 1 1 auto;
+
+  &__form {
+    @extend %column-nowrap;
+    position: relative;
+    margin: 3rem 4rem 0;
+    width: 28.5rem;
+    background-color: rgba($white, .05);
+    box-sizing: border-box;
+
+    &__label {
+      color: rgba($white, .5);
+      font-size: .75rem;
+    }
+
+    &__content {
+      flex: 1 1 auto;
+      margin-top: .5rem;
+    }
+
+    &__row {
+      padding: 1rem 1.5rem;
+      //margin-top: 1.25rem;
+      border-bottom: 1px solid rgba($black, .5);
+    }
+
+    &__actions {
+      margin: 1.5rem;
+      text-align: right;
+
+      .button {
+        overflow: hidden;
+      }
+    }
+  }
+
+  &__review {
+    &__row {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid $black;
+
+      &__label {
+        color: rgba($white, .5);
+        font-size: .75rem;
+      }
+
+      &__value {
+        margin-top: .5rem;
+      }
+    }
+  }
+
+  &__asset-dropdown {
+    border: 1px solid rgba($white, .1);
+    border-radius: 3px;
+    font-size: .875rem;
+
+    .dropdown {
+      &--opened {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &__items {
+        background-color: $black;
+        border: 1px solid rgba($white, .15);
+        border-top: none;
+        left: -1px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        max-height: 11.875rem;
+        overflow-y: auto;
+      }
+
+      &__item {
+        @extend %row-nowrap;
+        align-items: center;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+      }
+    }
+  }
+
+  &__input {
+    .input {
+      &__wrapper {
+        background-color: transparent;
+        border: 1px solid rgba($white, .1);
+        padding: .5rem;
+      }
+
+      &__input {
+        font-size: .875rem;
+        padding: .125rem 0;
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 400;
+      }
+    }
+  }
+}

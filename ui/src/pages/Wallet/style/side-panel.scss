@@ -1,0 +1,54 @@
+@import "../../../variables";
+
+.wallet__side-panel {
+  @extend %column-nowrap;
+  width: 14rem;
+  background-color: rgba($white, .1);
+  border-top: 1px solid $black;
+  border-left: 1px solid $black;
+  padding: 6rem 2rem;
+  box-shadow: 2px 0 2px 0px rgba($black, .1);
+  position: relative;
+  z-index: 200;
+
+  &__header {
+    @extend %row-nowrap;
+    align-items: center;
+    margin-bottom: 2rem;
+    &__text {
+      flex: 1 1 auto;
+    }
+  }
+
+  &__balance-group {
+    margin: 1rem 0;
+
+    &__label {
+      font-size: 0.875rem;
+      color: rgba($white, 0.375);
+    }
+
+    &__value {
+      color: $white;
+      margin-top: 1rem;
+      font-family: 'Roboto Mono', monospace;
+    }
+  }
+
+  &__footer {
+    @extend %row-nowrap;
+    margin-top: 2rem;
+    flex: 1 1 auto;
+    height: 0;
+    align-items: flex-end;
+
+    .button {
+      flex: 1 1 auto;
+      height: 2rem;
+    }
+
+    .button + .button {
+      margin-left: 1rem;
+    }
+  }
+}

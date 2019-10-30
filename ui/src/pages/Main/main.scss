@@ -1,0 +1,32 @@
+@import "../../variables.scss";
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  background-color: $mineshaft-gray;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &__body {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 1 auto;
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: $black;
+    flex: 1 1 auto;
+    height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  &--loading {
+    align-items: center;
+    justify-content: center;
+  }
+}

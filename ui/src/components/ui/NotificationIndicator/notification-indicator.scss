@@ -1,0 +1,22 @@
+@import "../../../variables";
+
+.notification-indicator {
+  position: relative;
+  height: inherit;
+
+  &__counter {
+    @extend %row-nowrap;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: -.25rem;
+    top: 0rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: .625rem;
+    font-weight: 300;
+    background-color: mix($black, $persimmon-red, 25);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+  }
+}

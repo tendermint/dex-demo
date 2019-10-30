@@ -1,0 +1,99 @@
+$black: #000;
+$white: #FFF;
+$mineshaft-gray: mix($white, #212121, 5);
+
+$regal-blue: #3084c3;
+
+$shamrock-green: #53b987;
+
+$texas-rose-orange: #FFB74B;
+
+$persimmon-red: #eb4d5c;
+
+%ellipsify {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+%row-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+%column-nowrap {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+%hoverable {
+  &:hover {
+    background-color: rgba($white, .1);
+  }
+
+  &:active {
+    background-color: rgba($black, .1);
+  }
+}
+
+%clickable {
+  cursor: pointer;
+
+  &:focus {
+    background-color: rgba($white, .1);
+    box-shadow: inset 0 0 0 2px rgba($white, .1);
+  }
+
+  &:hover {
+    background-color: rgba($white, .1);
+    box-shadow: none;
+  }
+
+  &:active {
+    background-color: rgba($black, .1);
+  }
+}
+
+%loading-placeholder {
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, rgba($white, 0), rgba($white, .05), rgba($white, 0));
+    transform: translateX(-100%);
+    animation: loading 1.5s infinite;
+  }
+}
+
+%tappable-icon {
+  transition: opacity 200ms ease-out;
+  opacity: .5;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: transparent;
+  }
+
+  &:hover {
+    opacity: .75;
+  }
+
+  &:focus {
+    opacity: .75;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+@keyframes loading {
+  100% {
+    transform: translateX(100%);
+  }
+}

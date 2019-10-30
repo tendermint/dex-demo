@@ -1,0 +1,281 @@
+@import "../../variables";
+
+.confirm-seed {
+  @extend %column-nowrap;
+  position: relative;
+  margin-top: 2rem;
+  background-color: mix($white, $regal-blue, 95);
+  border-radius: .25rem;
+  padding: 1.5rem 3rem;
+  box-shadow: 0 2px 4px 2px rgba($black, .35);
+  width: 24rem;
+  color: $black;
+
+  &__title {
+    font-weight: 500;
+    font-size: 1rem;
+    color: rgba($black, .8);
+    text-align: center;
+  }
+
+  &__info {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba($texas-rose-orange, .15);
+    border-radius: 3px;
+    padding: .5rem 1rem;
+    margin-top: 1rem;
+    font-size: .675rem;
+    font-family: "Roboto Mono", monospace;
+    color: mix($black, $texas-rose-orange, 30);
+  }
+
+  &__options {
+    margin: 1.5rem 0 1rem;
+  }
+
+  &__option {
+    @extend %clickable;
+    padding: 1rem;
+    border-radius: .25rem;
+    transition: background-color 100ms ease-in-out,
+          box-shadow 100ms ease-in-out;
+    user-select: none;
+    outline: none;
+    //box-shadow: 0 0 0 2px rgba($mineshaft-gray, .1);
+    color: rgba($black, .25);
+
+    &:hover,
+    &:focus {
+      background-color: rgba($black, .05);
+      box-shadow: 0 0 0 2px rgba($regal-blue, .5);
+    }
+
+    &:active {
+      background-color: rgba($black, .1);
+      box-shadow: 0 0 0 2px rgba($regal-blue, .8);
+    }
+
+    &--completed {
+      cursor: default;
+      box-shadow: none;
+      color: $black;
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+  }
+
+  &__option + &__option {
+    margin-top: 1rem;
+  }
+
+  &__seeds-actions {
+    @extend %row-nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: .75rem .5rem 0 .5rem;
+
+    .tooltip {
+      user-select: none;
+    }
+
+    .icon {
+      @extend %clickable;
+      @extend %tappable-icon;
+    }
+  }
+
+  &__seeds {
+    display: flex;
+    flex-flow: row wrap;
+    font-family: 'Roboto Mono', monospace;
+    justify-content: center;
+    background-color: rgba($mineshaft-gray, .05);
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+    margin: .5rem 0 0;
+
+    &--confirm {
+      margin: 2.25rem 0 2rem;
+    }
+  }
+
+  &__seed {
+    @extend %row-nowrap;
+    align-items: center;
+    flex: 1 1 25%;
+    font-size: .75rem;
+    border-bottom: 1px solid rgba($mineshaft-gray, .6);
+    padding-bottom: .25rem;
+    margin: .5rem;
+
+    &__number {
+      color: rgba($mineshaft-gray, .6);
+      user-select: none;
+    }
+
+    &__text {
+      flex: 1 1 auto;
+      text-align: center;
+      color: rgba($mineshaft-gray, .8);
+      font-weight: 500;
+
+      .input {
+        &__wrapper {
+          border: none;
+          padding-top: 0;
+          padding-bottom: 0;
+
+          &:focus-within,
+          &:active,
+          &:hover {
+            box-shadow: none;
+            background-color: transparent;
+          }
+        }
+
+        input {
+          font-size: .75rem;
+          color: $black;
+          font-weight: 500;
+          font-family: 'Roboto Mono', monospace;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  &__hidden-seeds {
+    @extend %row-nowrap;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($black, .25);
+    height: 10.25rem;
+    margin: 2.25rem 0 0;
+    border-radius: .25rem;
+
+    .button {
+      text-transform: uppercase;
+      color: rgba($white, .8);
+      border: 2px solid rgba($white, .6);
+      font-weight: 500;
+
+      &:focus,
+      &:hover {
+        border: 2px solid rgba($white, .8);
+        color: rgba($white, .8);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0px 2px rgba($regal-blue, .5);
+      }
+
+      &:active {
+        background-color: transparent;
+        box-shadow: 0 0 4px 0 rgba($black, .05);
+      }
+    }
+  }
+
+  &__download-button {
+    @extend %row-nowrap;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0 1rem;
+    background-color: rgba($shamrock-green, .8);
+    border: 1px solid $shamrock-green;
+    font-size: .875rem;
+    padding: .875rem;
+
+    &:before {
+      position: absolute;
+      display: block;
+      content: "";
+      top: calc(50% - .5rem);
+      left: .875rem;
+      width: 1rem;
+      height: 1rem;
+      background-image: url("../../assets/icons/download-white.svg");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    &:focus {
+      background-color: rgba($shamrock-green, .9);
+      box-shadow: 0 0 0px 2px rgba($white, .25);
+    }
+
+    &:hover {
+      background-color: rgba($shamrock-green, .9);
+    }
+
+    &:active {
+      background-color: rgba($shamrock-green, .7);
+      box-shadow: 0 0 4px 0 rgba($black, .05);
+    }
+  }
+
+  &__acknowledgement {
+    margin: 1rem 0;
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1rem;
+    color: rgba($black, .8);
+    font-style: italic;
+    text-align: center;
+  }
+
+  &__actions {
+    @extend %row-nowrap;
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: space-between;
+
+    .button {
+      &--secondary {
+        text-align: left;
+        color: rgba($black, .4);
+        font-weight: 500;
+        font-size: .875rem;
+        border-color: rgba($black, .2);
+        border-width: 2px;
+
+        &:hover,
+        &:focus {
+          color: rgba($black, .6) !important;
+          border-color: rgba($black, .4);
+        }
+
+        &:active {
+          color: rgba($black, .4) !important;
+        }
+      }
+
+      &--link {
+        text-align: left;
+        color: rgba($persimmon-red, .6);
+        font-size: .875rem;
+
+        &:hover,
+        &:focus {
+          color: rgba($persimmon-red, 1) !important;
+        }
+
+        &:active {
+          color: rgba($persimmon-red, .8) !important;
+        }
+      }
+
+      &--primary {
+        overflow: hidden;
+        font-size: .875rem;
+      }
+    }
+  }
+}
