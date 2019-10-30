@@ -1,9 +1,10 @@
 # Disclaimer
 
-TODO
-The code in this repository is for demo purposes only.  Use this at your own risk.
+The code hosted in this repository is a **technology preview** and is suitable for **demo purposes only**. The features provided by this draft implementation are not meant to be functionally complete and are not suitable for deployment in production.
 
-# Dex Demo
+**Use this software at your own risk**.
+
+# DeX Demo
 
 [![CircleCI](https://circleci.com/gh/tendermint/dex-demo.svg?style=svg)](https://circleci.com/gh/tendermint/dex-demo)
 
