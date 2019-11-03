@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -23,7 +24,7 @@ func GetCmdStop(cdc *codec.Codec) *cobra.Command {
 		Short: "posts an order under certain price conditions, i.e. a stop-loss or stop-buy",
 		Args:  cobra.ExactArgs(8),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx, bldr, err := cliutil.BuildEnsuredCtx(cdc)
+			ctx, _, err := cliutil.BuildEnsuredCtx(cdc)
 			if err != nil {
 				return err
 			}
@@ -73,7 +74,8 @@ func GetCmdStop(cdc *codec.Codec) *cobra.Command {
 			}
 
 			msg := types.NewMsgStop(ctx.GetFromAddress(), marketID, direction, price, quantity, uint16(tif), initPrice, relayedAddress, relayerFee)
-			return cliutil.ValidateAndBroadcast(ctx, bldr, msg)
+			fmt.Println(msg)
+			return nil
 		},
 	}
 }

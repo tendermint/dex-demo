@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	ModuleName = "order"
-	RouterKey  = ModuleName
-	StoreKey   = ModuleName
+	ModuleName   = "order"
+	RouterKey    = ModuleName
+	StoreKey     = ModuleName
+	LastPriceKey = "last_price"
 )
 
 const MaxTimeInForce = 600
