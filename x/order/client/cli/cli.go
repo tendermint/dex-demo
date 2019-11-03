@@ -24,6 +24,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "manages orders",
 	}
 	txCmd.AddCommand(client.PostCommands(
+		GetCmdStop(cdc),
 		GetCmdPost(cdc),
 		GetCmdCancel(cdc),
 	)...)
