@@ -28,14 +28,14 @@ func NewHandler(keeper Keeper) sdk.Handler {
 }
 
 func handleMsgStop(ctx sdk.Context, keeper Keeper, msg types.MsgStop) sdk.Result {
-	currentPrice := sdk.NewUint(0)
+	currentPrice := keeper.GetPrice(ctx, msg.Post.MarketID)
 	// Shouldn't be triggered in these ranges
-	if msg.Post.Price.GT(msg.PastPrice) && currentPrice.LT(msg.Post.Price) {
+	if msg.Post.Price.GT(msg.InitPrice) && currentPrice.LT(msg.Post.Price) {
 		return sdk.Result{
 			Log: fmt.Sprintf("current price not in triggering range"),
 		}
 	}
-	if msg.Post.Price.LT(msg.PastPrice) && currentPrice.GT(msg.Post.Price) {
+	if msg.Post.Price.LT(msg.InitPrice) && currentPrice.GT(msg.Post.Price) {
 		return sdk.Result{
 			Log: fmt.Sprintf("current price not in triggering range"),
 		}

@@ -31,7 +31,7 @@ type Keeper struct {
 	cdc          *codec.Codec
 }
 
-func NewKeeper(bk bank.Keeper, mk market.Keeper, ak asset.Keeper, lp, sk sdk.StoreKey, queue types.Backend, cdc *codec.Codec) Keeper {
+func NewKeeper(bk bank.Keeper, mk market.Keeper, ak asset.Keeper, sk, lp sdk.StoreKey, queue types.Backend, cdc *codec.Codec) Keeper {
 	return Keeper{
 		bankKeeper:   bk,
 		marketKeeper: mk,
@@ -208,4 +208,17 @@ func orderKey(id store.EntityID) []byte {
 	return store.PrefixKeyString(valKey, id.Bytes())
 }
 
-func (k Keeper) SetPrice(ctx sdk.Context, )
+func (k Keeper) SetPrice(ctx sdk.Context, mID store.EntityID, price sdk.Uint) {
+	store := ctx.KVStore(k.latestPrices)
+	mn := mID.String()
+	stringPrice := price.String()
+	store.Set([]byte(mn), []byte(stringPrice))
+}
+
+func (k Keeper) GetPrice(ctx sdk.Context, mID store.EntityID) sdk.Uint {
+	store := ctx.KVStore(k.latestPrices)
+	mn := mID.String()
+	currentPriceBytes := store.Get([]byte(mn))
+	currentPriceString := string(currentPriceBytes)
+	return sdk.NewUintFromString(currentPriceString)
+}
