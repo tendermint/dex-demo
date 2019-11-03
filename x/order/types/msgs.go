@@ -8,6 +8,74 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+type MsgStop struct {
+	Post MsgPost
+	// The price at the time the tx is signed.
+	// Needed to determine which direction the price travels in order to
+	// know whether to trigger above or below MsgPost.Price
+	InitPrice sdk.Uint
+	Relayer   sdk.AccAddress
+	RelayFee  sdk.Coins
+}
+
+func NewMsgStop(owner sdk.AccAddress, marketID store.EntityID, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16, initPrice sdk.Uint, relayer sdk.AccAddress, relayFee sdk.Coins) MsgStop {
+	return MsgStop{
+		Post: MsgPost{
+			Owner:       owner,
+			MarketID:    marketID,
+			Direction:   direction,
+			Price:       price,
+			Quantity:    quantity,
+			TimeInForce: tif,
+		},
+		InitPrice: initPrice,
+		Relayer:   relayer,
+		RelayFee:  relayFee,
+	}
+}
+
+func (msg MsgStop) Route() string {
+	return "order"
+}
+
+func (msg MsgStop) Type() string {
+	return "stop"
+}
+
+func (msg MsgStop) ValidateBasic() sdk.Error {
+	// Don't need to check a bool like Buy because t & f should be able to be used here?
+	if !msg.Post.MarketID.IsDefined() {
+		return sdk.ErrUnauthorized("invalid market ID")
+	}
+	if msg.Post.Price.IsZero() {
+		return sdk.ErrInvalidCoins("price cannot be zero")
+	}
+	if msg.Post.Quantity.IsZero() {
+		return sdk.ErrInvalidCoins("quantity cannot be zero")
+	}
+	if msg.Post.TimeInForce == 0 {
+		return sdk.ErrInternal("time in force cannot be zero")
+	}
+	if msg.Post.TimeInForce > MaxTimeInForce {
+		return sdk.ErrInternal("time in force cannot be larger than 600")
+	}
+	if msg.InitPrice.IsZero() {
+		return sdk.ErrInvalidCoins("pastPrice cannot be zero")
+	}
+	if msg.RelayFee.IsZero() {
+		return sdk.ErrInvalidCoins("relayFee cannot be zero")
+	}
+	return nil
+}
+
+func (msg MsgStop) GetSignBytes() []byte {
+	return serde.MustMarshalSortedJSON(msg)
+}
+
+func (msg MsgStop) GetSigners() []sdk.AccAddress {
+	return msg.Post.GetSigners()
+}
+
 type MsgPost struct {
 	Owner       sdk.AccAddress
 	MarketID    store.EntityID

@@ -26,16 +26,18 @@ type Keeper struct {
 	marketKeeper market.Keeper
 	assetKeeper  asset.Keeper
 	storeKey     sdk.StoreKey
+	latestPrices sdk.StoreKey
 	queue        types.Backend
 	cdc          *codec.Codec
 }
 
-func NewKeeper(bk bank.Keeper, mk market.Keeper, ak asset.Keeper, sk sdk.StoreKey, queue types.Backend, cdc *codec.Codec) Keeper {
+func NewKeeper(bk bank.Keeper, mk market.Keeper, ak asset.Keeper, lp, sk sdk.StoreKey, queue types.Backend, cdc *codec.Codec) Keeper {
 	return Keeper{
 		bankKeeper:   bk,
 		marketKeeper: mk,
 		assetKeeper:  ak,
 		storeKey:     sk,
+		latestPrices: lp,
 		queue:        queue,
 		cdc:          cdc,
 	}
@@ -205,3 +207,5 @@ func (k Keeper) doIterator(iter sdk.Iterator, cb IteratorCB) {
 func orderKey(id store.EntityID) []byte {
 	return store.PrefixKeyString(valKey, id.Bytes())
 }
+
+func (k Keeper) SetPrice(ctx sdk.Context, )
