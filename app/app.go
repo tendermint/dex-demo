@@ -50,10 +50,10 @@ const (
 )
 
 var (
-	// default home directories for gaiacli
+	// default home directories for dexcli
 	DefaultCLIHome = os.ExpandEnv("$HOME/.dexcli")
 
-	// default home directories for gaiad
+	// default home directories for dexd
 	DefaultNodeHome = os.ExpandEnv("$HOME/.dexd")
 
 	ModuleBasics = module.NewBasicManager(

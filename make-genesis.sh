@@ -10,7 +10,7 @@ dexcli config output json
 dexcli config indent true
 dexcli config trust-node true
 
-dexd gentx --name dex
+dexd gentx --name dex-demo
 
 echo "Collecting genesis txs..."
 dexd collect-gentxs
