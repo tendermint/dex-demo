@@ -61,7 +61,7 @@ You now have a single-validator `dexd` chain and an attached REST server. You sh
 
 ## Architecture
 
-This DeX Demo is a standard Cosmos SDK application. It consists of three tools:
+This DeX Demo is a standard Cosmos SDK application. It consists of two tools:
 
 1. `dexd`, which runs the blockchain itself.
 2. `dexcli`, which runs the REST server and acts as a CLI client for `dexd`.
