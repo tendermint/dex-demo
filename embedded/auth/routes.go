@@ -20,7 +20,6 @@ func RegisterRoutes(ctx context.CLIContext, r *mux.Router, cdc *codec.Codec) {
 	sub := r.PathPrefix("/auth").Subrouter()
 	sub.HandleFunc("/login", loginHandler()).Methods("POST")
 	sub.Handle("/logout", DefaultAuthMW(logoutHandler())).Methods("POST")
-	sub.HandleFunc("/csrf_token", csrfTokenHandler()).Methods("GET")
 	sub.Handle("/me", DefaultAuthMW(meHandler(ctx, cdc))).Methods("GET")
 }
 
@@ -80,20 +79,6 @@ func logoutHandler() http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusNoContent)
-	}
-}
-
-func csrfTokenHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tok, err := GetCSRFToken(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		_, err = w.Write([]byte(tok))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
 	}
 }
 
