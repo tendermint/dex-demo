@@ -36,12 +36,6 @@ func uiHandler(w http.ResponseWriter, r *http.Request) {
 		tmpl = t
 	}
 
-	// token, err := auth.GetCSRFToken(r)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
 	if _, ok := uiPaths[r.URL.Path]; ok {
 		kb, err := auth.GetKBFromSession(r)
 		var uexAddr string
@@ -50,7 +44,6 @@ func uiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tmplState := TemplateState{
-			CSRFToken:  "",
 			UEXAddress: uexAddr,
 		}
 		err = tmpl.Execute(w, tmplState)
@@ -64,7 +57,6 @@ func uiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type TemplateState struct {
-	CSRFToken  string
 	UEXAddress string
 }
 

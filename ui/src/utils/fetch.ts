@@ -2,22 +2,10 @@ import {OrderType} from '../ducks/exchange';
 
 export const BASE_API: string = process.env.BASE_API || '/api/v1';
 
-let CSRF_TOKEN: string = (window as any).CSRF_TOKEN;
-
-const getCSRFToken = async (): Promise<string> => {
-  if (CSRF_TOKEN) return CSRF_TOKEN;
-
-  const resp = await fetch(`${BASE_API}/auth/csrf_token`);
-  CSRF_TOKEN = await resp.text();
-  return CSRF_TOKEN;
-};
-
 export const post = async (url: string, body: object): Promise<Response> => {
-  const token = await getCSRFToken();
   return fetch(`${BASE_API}${url}`, {
     method: 'POST',
     headers: {
-      'X-CSRF-Token': token,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
@@ -25,7 +13,6 @@ export const post = async (url: string, body: object): Promise<Response> => {
 };
 
 export const get = async (url: string): Promise<Response> => {
-  // const token = await getCSRFToken();
   return fetch(`${BASE_API}${url}`);
 };
 

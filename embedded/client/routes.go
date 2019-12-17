@@ -19,9 +19,6 @@ import (
 
 func RegisterRoutes(ctx context.CLIContext, r *mux.Router, cdc *codec.Codec, enableFaucet bool) {
 	r.Use(auth.HandleCORSMW)
-	r.Use(auth.ProtectCSRFMW([]string{
-		"/api/v1/faucet/transfer",
-	}))
 	sub := r.PathPrefix("/api/v1").Subrouter()
 	auth.RegisterRoutes(ctx, sub, cdc)
 	exchange.RegisterRoutes(ctx, sub, cdc)
