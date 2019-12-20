@@ -8,13 +8,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/testutil"
 	"github.com/tendermint/dex-demo/testutil/testflags"
 	"github.com/tendermint/dex-demo/types"
-	"github.com/tendermint/dex-demo/types/store"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestQuerier(t *testing.T) {
@@ -36,12 +34,12 @@ func TestQuerier(t *testing.T) {
 	}
 
 	t.Run("should return no more than 50 orders in descending order", func(t *testing.T) {
-		id := store.NewEntityID(0)
+		id := sdk.ZeroUint()
 
 		for i := 0; i < 55; i++ {
-			id = id.Inc()
+			id = id.Add(sdk.OneUint())
 			require.NoError(t, k.OnEvent(types.OrderCreated{
-				MarketID: store.NewEntityID(2),
+				MarketID: sdk.NewUint(2),
 				ID:       id,
 			}))
 		}
@@ -50,57 +48,57 @@ func TestQuerier(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.Equal(t, 50, len(res.Orders))
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(55), res.Orders[0].ID)
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(6), res.Orders[49].ID)
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(5), res.NextID)
+		testutil.AssertEqualUints(t, sdk.NewUint(55), res.Orders[0].ID)
+		testutil.AssertEqualUints(t, sdk.NewUint(6), res.Orders[49].ID)
+		testutil.AssertEqualUints(t, sdk.NewUint(5), res.NextID)
 	})
 	t.Run("should work with an offset", func(t *testing.T) {
-		id := store.NewEntityID(0)
+		id := sdk.ZeroUint()
 
 		for i := 0; i < 55; i++ {
-			id = id.Inc()
+			id = id.Add(sdk.OneUint())
 			require.NoError(t, k.OnEvent(types.OrderCreated{
-				MarketID: store.NewEntityID(2),
+				MarketID: sdk.NewUint(2),
 				ID:       id,
 			}))
 		}
 
 		res, err := doListQuery(ListQueryRequest{
-			Start: store.NewEntityID(7),
+			Start: sdk.NewUint(7),
 		})
 		require.NoError(t, err)
 
 		assert.Equal(t, 7, len(res.Orders))
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(7), res.Orders[0].ID)
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(1), res.Orders[6].ID)
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(0), res.NextID)
+		testutil.AssertEqualUints(t, sdk.NewUint(7), res.Orders[0].ID)
+		testutil.AssertEqualUints(t, sdk.OneUint(), res.Orders[6].ID)
+		testutil.AssertEqualUints(t, sdk.ZeroUint(), res.NextID)
 	})
 	t.Run("should support filter by address alongside offset", func(t *testing.T) {
-		id := store.NewEntityID(0)
+		id := sdk.ZeroUint()
 		genOwner := testutil.RandAddr()
 		for i := 0; i < 110; i++ {
-			id = id.Inc()
+			id = id.Add(sdk.OneUint())
 			var owner sdk.AccAddress
 			if i%2 == 0 {
 				owner = genOwner
 			}
 
 			require.NoError(t, k.OnEvent(types.OrderCreated{
-				MarketID: store.NewEntityID(2),
+				MarketID: sdk.NewUint(2),
 				ID:       id,
 				Owner:    owner,
 			}))
 		}
 
 		res, err := doListQuery(ListQueryRequest{
-			Start: store.NewEntityID(104),
+			Start: sdk.NewUint(104),
 			Owner: genOwner,
 		})
 		require.NoError(t, err)
 
 		assert.Equal(t, 50, len(res.Orders))
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(109), res.Orders[0].ID)
-		testutil.AssertEqualEntityIDs(t, store.NewEntityID(11), res.Orders[49].ID)
+		testutil.AssertEqualUints(t, sdk.NewUint(109), res.Orders[0].ID)
+		testutil.AssertEqualUints(t, sdk.NewUint(11), res.Orders[49].ID)
 	})
 	t.Run("should return an error if the request does not deserialize", func(t *testing.T) {
 		_, err := q(ctx, []string{"list"}, abci.RequestQuery{Data: []byte("foo")})

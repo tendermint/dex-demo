@@ -1,23 +1,21 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/pkg/matcheng"
 	"github.com/tendermint/dex-demo/pkg/serde"
-	"github.com/tendermint/dex-demo/types/store"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type MsgPost struct {
 	Owner       sdk.AccAddress
-	MarketID    store.EntityID
+	MarketID    sdk.Uint
 	Direction   matcheng.Direction
 	Price       sdk.Uint
 	Quantity    sdk.Uint
 	TimeInForce uint16
 }
 
-func NewMsgPost(owner sdk.AccAddress, marketID store.EntityID, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) MsgPost {
+func NewMsgPost(owner sdk.AccAddress, marketID sdk.Uint, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) MsgPost {
 	return MsgPost{
 		Owner:       owner,
 		MarketID:    marketID,
@@ -37,7 +35,7 @@ func (msg MsgPost) Type() string {
 }
 
 func (msg MsgPost) ValidateBasic() sdk.Error {
-	if !msg.MarketID.IsDefined() {
+	if msg.MarketID.IsZero() {
 		return sdk.ErrUnauthorized("invalid market ID")
 	}
 	if msg.Price.IsZero() {
@@ -65,10 +63,10 @@ func (msg MsgPost) GetSigners() []sdk.AccAddress {
 
 type MsgCancel struct {
 	Owner   sdk.AccAddress
-	OrderID store.EntityID
+	OrderID sdk.Uint
 }
 
-func NewMsgCancel(owner sdk.AccAddress, orderID store.EntityID) MsgCancel {
+func NewMsgCancel(owner sdk.AccAddress, orderID sdk.Uint) MsgCancel {
 	return MsgCancel{
 		Owner:   owner,
 		OrderID: orderID,
@@ -87,7 +85,7 @@ func (msg MsgCancel) ValidateBasic() sdk.Error {
 	if msg.Owner.Empty() {
 		return sdk.ErrUnauthorized("owner cannot be empty")
 	}
-	if !msg.OrderID.IsDefined() {
+	if msg.OrderID.IsZero() {
 		return sdk.ErrInternal("invalid order ID")
 	}
 	return nil

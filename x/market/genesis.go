@@ -2,10 +2,8 @@ package market
 
 import (
 	"errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/tendermint/dex-demo/types/store"
 	"github.com/tendermint/dex-demo/x/market/types"
 )
 
@@ -18,10 +16,10 @@ func NewGenesisState(markets []types.Market) GenesisState {
 }
 
 func ValidateGenesis(data GenesisState) error {
-	currentId := store.ZeroEntityID
+	currentId := sdk.ZeroUint()
 	for _, market := range data.Markets {
-		currentId = currentId.Inc()
-		if !currentId.Equals(market.ID) {
+		currentId = currentId.Add(sdk.OneUint())
+		if !currentId.Equal(market.ID) {
 			return errors.New("Invalid Market: ID must monotonically increase.")
 		}
 		if market.BaseAssetID.IsZero() {
@@ -39,9 +37,9 @@ func DefaultGenesisState() GenesisState {
 	return GenesisState{
 		Markets: []types.Market{
 			{
-				ID:           store.NewEntityID(1),
-				BaseAssetID:  store.NewEntityID(2),
-				QuoteAssetID: store.NewEntityID(1),
+				ID:           sdk.OneUint(),
+				BaseAssetID:  sdk.NewUint(2),
+				QuoteAssetID: sdk.OneUint(),
 			},
 		},
 	}

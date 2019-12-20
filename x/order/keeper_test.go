@@ -11,7 +11,6 @@ import (
 	"github.com/tendermint/dex-demo/testutil/mockapp"
 	"github.com/tendermint/dex-demo/testutil/testflags"
 	"github.com/tendermint/dex-demo/types/errs"
-	"github.com/tendermint/dex-demo/types/store"
 	"github.com/tendermint/dex-demo/x/asset/types"
 	types2 "github.com/tendermint/dex-demo/x/market/types"
 	types4 "github.com/tendermint/dex-demo/x/order/types"
@@ -21,7 +20,7 @@ import (
 
 type testCtx struct {
 	ctx      sdk.Context
-	marketID store.EntityID
+	marketID sdk.Uint
 	owner    sdk.AccAddress
 	buyer    sdk.AccAddress
 	seller   sdk.AccAddress
@@ -35,7 +34,7 @@ func TestKeeper_Post(t *testing.T) {
 	testflags.UnitTest(t)
 	t.Run("returns an error for a nonexistent market", func(t *testing.T) {
 		ctx := setupTest(t)
-		_, err := ctx.app.OrderKeeper.Post(ctx.ctx, ctx.buyer, ctx.marketID.Inc(), matcheng.Bid, testutil.ToBaseUnits(1), testutil.ToBaseUnits(10), 599)
+		_, err := ctx.app.OrderKeeper.Post(ctx.ctx, ctx.buyer, ctx.marketID.Add(sdk.OneUint()), matcheng.Bid, testutil.ToBaseUnits(1), testutil.ToBaseUnits(10), 599)
 		assert.Error(t, err)
 		assert.Equal(t, err.Code(), errs.CodeNotFound)
 	})
@@ -80,7 +79,7 @@ func TestKeeper_Cancel(t *testing.T) {
 	testflags.UnitTest(t)
 	t.Run("returns an error for a nonexistent order", func(t *testing.T) {
 		ctx := setupTest(t)
-		_, err := ctx.app.OrderKeeper.Post(ctx.ctx, ctx.buyer, store.NewEntityID(0), matcheng.Bid, testutil.ToBaseUnits(2), testutil.ToBaseUnits(10), 599)
+		_, err := ctx.app.OrderKeeper.Post(ctx.ctx, ctx.buyer, sdk.ZeroUint(), matcheng.Bid, testutil.ToBaseUnits(2), testutil.ToBaseUnits(10), 599)
 		assert.Error(t, err)
 		assert.Equal(t, err.Code(), errs.CodeNotFound)
 	})
@@ -105,25 +104,25 @@ func TestKeeper_Iteration(t *testing.T) {
 	last, err := ctx.app.OrderKeeper.Post(ctx.ctx, ctx.buyer, ctx.marketID, matcheng.Bid, testutil.ToBaseUnits(2), testutil.ToBaseUnits(10), 599)
 	require.NoError(t, err)
 
-	var coll []store.EntityID
+	var coll []sdk.Uint
 	ctx.app.OrderKeeper.Iterator(ctx.ctx, func(order types4.Order) bool {
-		if order.ID.Equals(last.ID) {
+		if order.ID.Equal(last.ID) {
 			return false
 		}
 		coll = append(coll, order.ID)
 		return true
 	})
-	assert.EqualValues(t, []store.EntityID{store.NewEntityID(1), store.NewEntityID(2)}, coll)
+	assert.EqualValues(t, []sdk.Uint{sdk.OneUint(), sdk.NewUint(2)}, coll)
 
-	coll = make([]store.EntityID, 0)
+	coll = make([]sdk.Uint, 0)
 	ctx.app.OrderKeeper.ReverseIterator(ctx.ctx, func(order types4.Order) bool {
-		if order.ID.Equals(first.ID) {
+		if order.ID.Equal(first.ID) {
 			return false
 		}
 		coll = append(coll, order.ID)
 		return true
 	})
-	assert.EqualValues(t, []store.EntityID{store.NewEntityID(3), store.NewEntityID(2)}, coll)
+	assert.EqualValues(t, []sdk.Uint{sdk.NewUint(3), sdk.NewUint(2)}, coll)
 }
 
 func setupTest(t *testing.T) *testCtx {

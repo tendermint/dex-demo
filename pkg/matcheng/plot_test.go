@@ -32,7 +32,7 @@ func TestPlotCurves(t *testing.T) {
 
 	res := &MatchResults{
 		BidAggregates: []AggregatePrice{
-			{sdk.NewUint(1), sdk.NewUint(30)},
+			{sdk.OneUint(), sdk.NewUint(30)},
 			{sdk.NewUint(2), sdk.NewUint(20)},
 			{sdk.NewUint(3), sdk.NewUint(10)},
 		},

@@ -105,7 +105,7 @@ test: all
 	UEX_TEST_BIN_DIR=$(shell pwd)/build go test -v ./...
 
 test-unit:
-	go test -v ./... -integration=false
+	go test -v ./...
 
 format:
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./x/embedded/ui/a_ui-packr.go" | xargs gofmt -w -s

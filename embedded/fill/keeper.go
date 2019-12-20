@@ -1,12 +1,14 @@
 package fill
 
 import (
+	"github.com/tendermint/dex-demo/storeutil"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/tendermint/dex-demo/embedded/store"
 	"github.com/tendermint/dex-demo/types"
-	"github.com/tendermint/dex-demo/types/store"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
@@ -60,9 +62,9 @@ func (k Keeper) OnEvent(event interface{}) error {
 }
 
 func fillIterKey(blockNum int64) []byte {
-	return store.PrefixKeyBytes(store.Int64Subkey(blockNum))
+	return storeutil.PrefixKeyBytes(storeutil.Int64Subkey(blockNum))
 }
 
-func fillKey(blockNum int64, orderId store.EntityID) []byte {
-	return store.PrefixKeyBytes(fillIterKey(blockNum), orderId.Bytes())
+func fillKey(blockNum int64, orderId sdk.Uint) []byte {
+	return storeutil.PrefixKeyBytes(fillIterKey(blockNum), storeutil.SDKUintSubkey(orderId))
 }

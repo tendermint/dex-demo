@@ -1,11 +1,9 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/pkg/serde"
 	"github.com/tendermint/dex-demo/types/errs"
-	"github.com/tendermint/dex-demo/types/store"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type MsgCreate struct {
@@ -16,12 +14,12 @@ type MsgCreate struct {
 }
 
 type MsgMint struct {
-	ID     store.EntityID
+	ID     sdk.Uint
 	Minter sdk.AccAddress
 	Amount sdk.Uint
 }
 
-func NewMsgMint(id store.EntityID, minter sdk.AccAddress, amount sdk.Uint) MsgMint {
+func NewMsgMint(id sdk.Uint, minter sdk.AccAddress, amount sdk.Uint) MsgMint {
 	return MsgMint{
 		ID:     id,
 		Minter: minter,
@@ -38,7 +36,7 @@ func (msg MsgMint) Type() string {
 }
 
 func (msg MsgMint) ValidateBasic() sdk.Error {
-	if !msg.ID.IsDefined() {
+	if msg.ID.IsZero() {
 		return errs.ErrNotFound("asset ID must exist")
 	}
 	if msg.Minter.Empty() {
@@ -56,12 +54,12 @@ func (msg MsgMint) GetSigners() []sdk.AccAddress {
 }
 
 type MsgBurn struct {
-	ID     store.EntityID
+	ID     sdk.Uint
 	Burner sdk.AccAddress
 	Amount sdk.Uint
 }
 
-func NewMsgBurn(id store.EntityID, burner sdk.AccAddress, amount sdk.Uint) MsgBurn {
+func NewMsgBurn(id sdk.Uint, burner sdk.AccAddress, amount sdk.Uint) MsgBurn {
 	return MsgBurn{
 		ID:     id,
 		Burner: burner,
@@ -78,7 +76,7 @@ func (msg MsgBurn) Type() string {
 }
 
 func (msg MsgBurn) ValidateBasic() sdk.Error {
-	if !msg.ID.IsDefined() {
+	if msg.ID.IsZero() {
 		return errs.ErrNotFound("asset ID must exist")
 	}
 	if msg.Burner.Empty() {
@@ -96,13 +94,13 @@ func (msg MsgBurn) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransfer struct {
-	ID     store.EntityID
+	ID     sdk.Uint
 	From   sdk.AccAddress
 	To     sdk.AccAddress
 	Amount sdk.Uint
 }
 
-func NewMsgTransfer(id store.EntityID, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Uint) MsgTransfer {
+func NewMsgTransfer(id sdk.Uint, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Uint) MsgTransfer {
 	return MsgTransfer{
 		ID:     id,
 		From:   from,
@@ -120,7 +118,7 @@ func (msg MsgTransfer) Type() string {
 }
 
 func (msg MsgTransfer) ValidateBasic() sdk.Error {
-	if !msg.ID.IsDefined() {
+	if msg.ID.IsZero() {
 		return errs.ErrNotFound("asset ID must exist")
 	}
 	if msg.From.Empty() || msg.To.Empty() {

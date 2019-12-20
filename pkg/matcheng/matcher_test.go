@@ -11,11 +11,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/testutil"
 	"github.com/tendermint/dex-demo/testutil/testflags"
-	"github.com/tendermint/dex-demo/types/store"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestMatcher_Golden(t *testing.T) {
@@ -63,16 +61,16 @@ func doMatch(bids [][2]uint64, asks [][2]uint64) (*MatchResults, map[string]Fill
 	matcher := GetMatcher()
 	defer ReturnMatcher(matcher)
 
-	id := store.NewEntityID(0)
+	id := sdk.ZeroUint()
 	if bids != nil {
 		for _, bid := range bids {
-			id = id.Inc()
+			id = id.Add(sdk.OneUint())
 			matcher.EnqueueOrder(Bid, id, sdk.NewUint(bid[0]), sdk.NewUint(bid[1]))
 		}
 	}
 	if asks != nil {
 		for _, ask := range asks {
-			id = id.Inc()
+			id = id.Add(sdk.OneUint())
 			matcher.EnqueueOrder(Ask, id, sdk.NewUint(ask[0]), sdk.NewUint(ask[1]))
 		}
 	}

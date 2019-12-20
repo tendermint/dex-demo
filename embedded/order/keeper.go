@@ -1,11 +1,13 @@
 package order
 
 import (
+	"github.com/tendermint/dex-demo/storeutil"
 	dbm "github.com/tendermint/tm-db"
+	"math/big"
 
+	"github.com/tendermint/dex-demo/embedded/store"
 	"github.com/tendermint/dex-demo/types"
 	"github.com/tendermint/dex-demo/types/errs"
-	"github.com/tendermint/dex-demo/types/store"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,10 +35,10 @@ func NewKeeper(db dbm.DB, cdc *codec.Codec) Keeper {
 	}
 }
 
-func (k Keeper) OpenOrdersByMarket(mktID store.EntityID) []Order {
+func (k Keeper) OpenOrdersByMarket(mktID sdk.Uint) []Order {
 	var out []Order
 	k.ReverseIteratorOpenOrders(func(order Order) bool {
-		if !mktID.Equals(order.MarketID) {
+		if !mktID.Equal(order.MarketID) {
 			return true
 		}
 
@@ -47,10 +49,10 @@ func (k Keeper) OpenOrdersByMarket(mktID store.EntityID) []Order {
 }
 
 func (k Keeper) OrdersByOwner(owner sdk.AccAddress, cb IteratorCB) {
-	var ownedOrders []store.EntityID
+	var ownedOrders []sdk.Uint
 
 	k.as.ReversePrefixIterator(ownerOrderIterKey(owner), func(_ []byte, v []byte) bool {
-		id := store.NewEntityIDFromBytes(v)
+		id := sdk.NewUintFromBigInt(new(big.Int).SetBytes(v))
 		ownedOrders = append(ownedOrders, id)
 		return true
 	})
@@ -78,11 +80,11 @@ func (k Keeper) OnOrderCreatedEvent(event types.OrderCreated) {
 		Status:         "OPEN",
 		Type:           "LIMIT",
 		TimeInForce:    event.TimeInForceBlocks,
-		QuantityFilled: sdk.NewUint(0),
+		QuantityFilled: sdk.ZeroUint(),
 		CreatedBlock:   event.CreatedBlock,
 	}
 	k.Set(order)
-	k.as.Set(ownerOrderKey(order.Owner, order.ID), order.ID.Bytes())
+	k.as.Set(ownerOrderKey(order.Owner, order.ID), storeutil.SDKUintSubkey(order.ID))
 }
 
 func (k Keeper) OnFillEvent(event types.Fill) sdk.Error {
@@ -111,7 +113,7 @@ func (k Keeper) OnOrderCancelledEvent(event types.OrderCancelled) sdk.Error {
 	return nil
 }
 
-func (k Keeper) Get(id store.EntityID) (Order, sdk.Error) {
+func (k Keeper) Get(id sdk.Uint) (Order, sdk.Error) {
 	var order Order
 	ordB := k.as.Get(orderKey(id))
 	if ordB == nil {
@@ -126,7 +128,7 @@ func (k Keeper) Set(order Order) {
 	k.as.Set(orderKey(order.ID), ordB)
 
 	if order.Status == "OPEN" {
-		k.as.Set(openOrderKey(order.MarketID, order.ID), order.ID.Bytes())
+		k.as.Set(openOrderKey(order.MarketID, order.ID), storeutil.SDKUintSubkey(order.ID))
 	} else {
 		k.as.Delete(openOrderKey(order.MarketID, order.ID))
 	}
@@ -141,10 +143,10 @@ func (k Keeper) ReverseIterator(cb IteratorCB) {
 }
 
 func (k Keeper) ReverseIteratorOpenOrders(cb IteratorCB) {
-	var openOrderIDs []store.EntityID
+	var openOrderIDs []sdk.Uint
 
 	k.as.ReversePrefixIterator([]byte(openOrderPrefix), func(_ []byte, v []byte) bool {
-		id := store.NewEntityIDFromBytes(v)
+		id := sdk.NewUintFromBigInt(new(big.Int).SetBytes(v))
 		openOrderIDs = append(openOrderIDs, id)
 		return true
 	})
@@ -161,9 +163,9 @@ func (k Keeper) ReverseIteratorOpenOrders(cb IteratorCB) {
 	}
 }
 
-func (k Keeper) ReverseIteratorFrom(startID store.EntityID, cb IteratorCB) {
+func (k Keeper) ReverseIteratorFrom(startID sdk.Uint, cb IteratorCB) {
 	// Inc() below because end is exclusive
-	k.as.ReverseIterator(orderKey(store.NewEntityID(0)), orderKey(startID.Inc()), func(_ []byte, v []byte) bool {
+	k.as.ReverseIterator(orderKey(sdk.ZeroUint()), orderKey(startID.Add(sdk.OneUint())), func(_ []byte, v []byte) bool {
 		var order Order
 		k.cdc.MustUnmarshalBinaryBare(v, &order)
 		return cb(order)
@@ -183,18 +185,18 @@ func (k Keeper) OnEvent(event interface{}) error {
 	return nil
 }
 
-func orderKey(id store.EntityID) []byte {
-	return store.PrefixKeyString(orderPrefix, id.Bytes())
+func orderKey(id sdk.Uint) []byte {
+	return storeutil.PrefixKeyString(orderPrefix, storeutil.SDKUintSubkey(id))
 }
 
-func openOrderKey(marketID store.EntityID, orderID store.EntityID) []byte {
-	return store.PrefixKeyString(openOrderPrefix, marketID.Bytes(), orderID.Bytes())
+func openOrderKey(marketID sdk.Uint, orderID sdk.Uint) []byte {
+	return storeutil.PrefixKeyString(openOrderPrefix, storeutil.SDKUintSubkey(marketID), storeutil.SDKUintSubkey(orderID))
 }
 
-func ownerOrderKey(owner sdk.AccAddress, orderID store.EntityID) []byte {
-	return store.PrefixKeyBytes(ownerOrderIterKey(owner), orderID.Bytes())
+func ownerOrderKey(owner sdk.AccAddress, orderID sdk.Uint) []byte {
+	return storeutil.PrefixKeyBytes(ownerOrderIterKey(owner), storeutil.SDKUintSubkey(orderID))
 }
 
 func ownerOrderIterKey(owner sdk.AccAddress) []byte {
-	return store.PrefixKeyString(ownedOrderPrefix, owner.Bytes())
+	return storeutil.PrefixKeyString(ownedOrderPrefix, owner.Bytes())
 }

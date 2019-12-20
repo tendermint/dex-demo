@@ -12,14 +12,12 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/pkg/matcheng"
 	"github.com/tendermint/dex-demo/testutil"
 	"github.com/tendermint/dex-demo/testutil/mockapp"
 	"github.com/tendermint/dex-demo/testutil/testflags"
 	"github.com/tendermint/dex-demo/types"
-	"github.com/tendermint/dex-demo/types/store"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestQuerier_Candles(t *testing.T) {
@@ -27,53 +25,53 @@ func TestQuerier_Candles(t *testing.T) {
 	app := mockapp.New(t)
 	db := dbm.NewMemDB()
 	keeper := price.NewKeeper(db, app.Cdc)
-	mktID := store.NewEntityID(1)
+	mktID := sdk.OneUint()
 
 	fills := []types.Fill{
 		{
-			store.NewEntityID(1),
+			sdk.OneUint(),
 			mktID,
 			testutil.RandAddr(),
 			"DEX/ETH",
 			matcheng.Bid,
 			sdk.NewUint(100),
-			sdk.NewUint(0),
+			sdk.ZeroUint(),
 			1,
 			100,
 			sdk.NewUint(100),
 		},
 		{
-			store.NewEntityID(1),
+			sdk.OneUint(),
 			mktID,
 			testutil.RandAddr(),
 			"DEX/ETH",
 			matcheng.Bid,
 			sdk.NewUint(100),
-			sdk.NewUint(0),
+			sdk.ZeroUint(),
 			2,
 			130,
 			sdk.NewUint(90),
 		},
 		{
-			store.NewEntityID(1),
+			sdk.OneUint(),
 			mktID,
 			testutil.RandAddr(),
 			"DEX/ETH",
 			matcheng.Bid,
 			sdk.NewUint(100),
-			sdk.NewUint(0),
+			sdk.ZeroUint(),
 			3,
 			160,
 			sdk.NewUint(120),
 		},
 		{
-			store.NewEntityID(1),
+			sdk.OneUint(),
 			mktID,
 			testutil.RandAddr(),
 			"DEX/ETH",
 			matcheng.Bid,
 			sdk.NewUint(100),
-			sdk.NewUint(0),
+			sdk.ZeroUint(),
 			4,
 			190,
 			sdk.NewUint(140),

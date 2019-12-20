@@ -3,10 +3,8 @@ package types
 import (
 	"time"
 
-	"github.com/tendermint/dex-demo/pkg/matcheng"
-	"github.com/tendermint/dex-demo/types/store"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/dex-demo/pkg/matcheng"
 )
 
 type EventHandler interface {
@@ -16,15 +14,15 @@ type EventHandler interface {
 type Batch struct {
 	BlockNumber   int64
 	BlockTime     time.Time
-	MarketID      store.EntityID
+	MarketID      sdk.Uint
 	ClearingPrice sdk.Uint
 	Bids          []matcheng.AggregatePrice
 	Asks          []matcheng.AggregatePrice
 }
 
 type Fill struct {
-	OrderID     store.EntityID
-	MarketID    store.EntityID
+	OrderID     sdk.Uint
+	MarketID    sdk.Uint
 	Owner       sdk.AccAddress
 	Pair        string
 	Direction   matcheng.Direction
@@ -36,9 +34,9 @@ type Fill struct {
 }
 
 type OrderCreated struct {
-	ID                store.EntityID
+	ID                sdk.Uint
 	Owner             sdk.AccAddress
-	MarketID          store.EntityID
+	MarketID          sdk.Uint
 	Direction         matcheng.Direction
 	Price             sdk.Uint
 	Quantity          sdk.Uint
@@ -47,12 +45,12 @@ type OrderCreated struct {
 }
 
 type OrderCancelled struct {
-	OrderID store.EntityID
+	OrderID sdk.Uint
 }
 
 type BurnCreated struct {
-	ID          store.EntityID
-	AssetID     store.EntityID
+	ID          sdk.Uint
+	AssetID     sdk.Uint
 	BlockNumber int64
 	Burner      sdk.AccAddress
 	Beneficiary []byte

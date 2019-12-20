@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tendermint/dex-demo/types/store"
+	"github.com/tendermint/dex-demo/embedded/store"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -16,7 +16,7 @@ const (
 )
 
 type Asset struct {
-	ID                store.EntityID `json:"id"`
+	ID                sdk.Uint       `json:"id"`
 	Name              string         `json:"name"`
 	Symbol            string         `json:"symbol"`
 	Owner             sdk.AccAddress `json:"owner"`
@@ -33,7 +33,7 @@ Circulating Supply: %s,
 TotalSupply: %s"`, a.ID, a.Name, a.Symbol, a.Owner, a.CirculatingSupply, a.TotalSupply))
 }
 
-func New(id store.EntityID, name string, symbol string, owner sdk.AccAddress, circSup sdk.Uint, totalSup sdk.Uint) Asset {
+func New(id sdk.Uint, name string, symbol string, owner sdk.AccAddress, circSup sdk.Uint, totalSup sdk.Uint) Asset {
 	return Asset{
 		ID:                id,
 		Name:              name,
@@ -44,10 +44,10 @@ func New(id store.EntityID, name string, symbol string, owner sdk.AccAddress, ci
 	}
 }
 
-func Coin(id store.EntityID, quantity sdk.Uint) sdk.Coin {
+func Coin(id sdk.Uint, quantity sdk.Uint) sdk.Coin {
 	return store.FormatCoin(id, quantity)
 }
 
-func Coins(id store.EntityID, quantity sdk.Uint) sdk.Coins {
+func Coins(id sdk.Uint, quantity sdk.Uint) sdk.Coins {
 	return sdk.NewCoins(Coin(id, quantity))
 }

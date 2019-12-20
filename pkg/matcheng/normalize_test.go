@@ -17,10 +17,10 @@ func TestNormalizeQuoteQuantity(t *testing.T) {
 		{testutil.ToBaseUnitsDecimals(1, 0), testutil.ToBaseUnitsDecimals(10, 0), testutil.ToBaseUnitsDecimals(10, 0)},
 		{testutil.ToBaseUnitsDecimals(10, 0), testutil.ToBaseUnitsDecimals(1, 3), testutil.ToBaseUnitsDecimals(10, 3)},
 		{testutil.ToBaseUnitsDecimals(2, 2), testutil.ToBaseUnitsDecimals(3, 3), testutil.ToBaseUnitsDecimals(6, 5)},
-		{sdk.NewUint(1), testutil.ToBaseUnitsDecimals(1, 0), sdk.NewUint(1)},
+		{sdk.OneUint(), testutil.ToBaseUnitsDecimals(1, 0), sdk.OneUint()},
 	}
 
-	_, err := NormalizeQuoteQuantity(sdk.NewUint(1), sdk.NewUint(1))
+	_, err := NormalizeQuoteQuantity(sdk.OneUint(), sdk.OneUint())
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "quantity too small to represent")
 

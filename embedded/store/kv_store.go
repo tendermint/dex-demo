@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type KVStore interface {
+type SimpleKVStore interface {
 	Get(key []byte) []byte
 
 	Has(key []byte) bool

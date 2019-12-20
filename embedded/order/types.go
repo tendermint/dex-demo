@@ -1,16 +1,14 @@
 package order
 
 import (
-	"github.com/tendermint/dex-demo/pkg/matcheng"
-	"github.com/tendermint/dex-demo/types/store"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/dex-demo/pkg/matcheng"
 )
 
 type Order struct {
-	ID             store.EntityID     `json:"id"`
+	ID             sdk.Uint           `json:"id"`
 	Owner          sdk.AccAddress     `json:"owner"`
-	MarketID       store.EntityID     `json:"market_id"`
+	MarketID       sdk.Uint           `json:"market_id"`
 	Direction      matcheng.Direction `json:"direction"`
 	Price          sdk.Uint           `json:"price"`
 	Quantity       sdk.Uint           `json:"quantity"`
@@ -22,11 +20,11 @@ type Order struct {
 }
 
 type ListQueryRequest struct {
-	Start store.EntityID
+	Start sdk.Uint
 	Owner sdk.AccAddress
 }
 
 type ListQueryResult struct {
-	NextID store.EntityID `json:"next_id"`
-	Orders []Order        `json:"orders"`
+	NextID sdk.Uint `json:"next_id"`
+	Orders []Order  `json:"orders"`
 }

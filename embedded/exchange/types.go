@@ -1,15 +1,13 @@
 package exchange
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/embedded"
 	"github.com/tendermint/dex-demo/pkg/matcheng"
-	"github.com/tendermint/dex-demo/types/store"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type OrderCreationRequest struct {
-	MarketID    store.EntityID     `json:"market_id"`
+	MarketID    sdk.Uint           `json:"market_id"`
 	Direction   matcheng.Direction `json:"direction"`
 	Price       sdk.Uint           `json:"price"`
 	Quantity    sdk.Uint           `json:"quantity"`
@@ -19,8 +17,8 @@ type OrderCreationRequest struct {
 
 type OrderCreationResponse struct {
 	BlockInclusion embedded.BlockInclusion `json:"block_inclusion"`
-	ID             store.EntityID          `json:"id"`
-	MarketID       store.EntityID          `json:"market_id"`
+	ID             sdk.Uint                `json:"id"`
+	MarketID       sdk.Uint                `json:"market_id"`
 	Direction      matcheng.Direction      `json:"direction"`
 	Price          sdk.Uint                `json:"price"`
 	Quantity       sdk.Uint                `json:"quantity"`

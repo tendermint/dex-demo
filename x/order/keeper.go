@@ -2,8 +2,9 @@ package order
 
 import (
 	"github.com/tendermint/dex-demo/pkg/matcheng"
+	"github.com/tendermint/dex-demo/storeutil"
 	"github.com/tendermint/dex-demo/types"
-	"github.com/tendermint/dex-demo/types/store"
+	"github.com/tendermint/dex-demo/types/errs"
 	"github.com/tendermint/dex-demo/x/asset"
 	assettypes "github.com/tendermint/dex-demo/x/asset/types"
 	"github.com/tendermint/dex-demo/x/market"
@@ -41,7 +42,7 @@ func NewKeeper(bk bank.Keeper, mk market.Keeper, ak asset.Keeper, sk sdk.StoreKe
 	}
 }
 
-func (k Keeper) Post(ctx sdk.Context, owner sdk.AccAddress, mktID store.EntityID, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) (types3.Order, sdk.Error) {
+func (k Keeper) Post(ctx sdk.Context, owner sdk.AccAddress, mktID sdk.Uint, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) (types3.Order, sdk.Error) {
 	var err sdk.Error
 	mkt, err := k.marketKeeper.Get(ctx, mktID)
 	if err != nil {
@@ -83,7 +84,7 @@ func (k Keeper) Post(ctx sdk.Context, owner sdk.AccAddress, mktID store.EntityID
 	)
 }
 
-func (k Keeper) Create(ctx sdk.Context, owner sdk.AccAddress, marketID store.EntityID, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) (types3.Order, sdk.Error) {
+func (k Keeper) Create(ctx sdk.Context, owner sdk.AccAddress, marketID sdk.Uint, direction matcheng.Direction, price sdk.Uint, quantity sdk.Uint, tif uint16) (types3.Order, sdk.Error) {
 	id := k.incrementSeq(ctx)
 	order := types3.Order{
 		ID:                id,
@@ -95,7 +96,7 @@ func (k Keeper) Create(ctx sdk.Context, owner sdk.AccAddress, marketID store.Ent
 		TimeInForceBlocks: tif,
 		CreatedBlock:      ctx.BlockHeight(),
 	}
-	err := store.SetNotExists(ctx, k.storeKey, k.cdc, orderKey(id), order)
+	err := storeutil.Create(ctx, k.storeKey, k.cdc, orderKey(id), order)
 	_ = k.queue.Publish(types.OrderCreated{
 		ID:                order.ID,
 		Owner:             order.Owner,
@@ -107,10 +108,10 @@ func (k Keeper) Create(ctx sdk.Context, owner sdk.AccAddress, marketID store.Ent
 		CreatedBlock:      order.CreatedBlock,
 	})
 
-	return order, err
+	return order, errs.WrapOrNil(err)
 }
 
-func (k Keeper) Cancel(ctx sdk.Context, id store.EntityID) sdk.Error {
+func (k Keeper) Cancel(ctx sdk.Context, id sdk.Uint) sdk.Error {
 	var err sdk.Error
 	ord, err := k.Get(ctx, id)
 	if err != nil {
@@ -155,26 +156,26 @@ func (k Keeper) Cancel(ctx sdk.Context, id store.EntityID) sdk.Error {
 	return k.Del(ctx, ord.ID)
 }
 
-func (k Keeper) Get(ctx sdk.Context, id store.EntityID) (types3.Order, sdk.Error) {
+func (k Keeper) Get(ctx sdk.Context, id sdk.Uint) (types3.Order, sdk.Error) {
 	var out types3.Order
-	err := store.Get(ctx, k.storeKey, k.cdc, orderKey(id), &out)
-	return out, err
+	err := storeutil.Get(ctx, k.storeKey, k.cdc, orderKey(id), &out)
+	return out, errs.WrapNotFound(err)
 }
 
 func (k Keeper) Set(ctx sdk.Context, order types3.Order) sdk.Error {
-	return store.SetExists(ctx, k.storeKey, k.cdc, orderKey(order.ID), order)
+	return errs.WrapOrNil(storeutil.Update(ctx, k.storeKey, k.cdc, orderKey(order.ID), order))
 }
 
-func (k Keeper) Has(ctx sdk.Context, id store.EntityID) bool {
-	return store.Has(ctx, k.storeKey, orderKey(id))
+func (k Keeper) Has(ctx sdk.Context, id sdk.Uint) bool {
+	return storeutil.Has(ctx, k.storeKey, orderKey(id))
 }
 
-func (k Keeper) Del(ctx sdk.Context, id store.EntityID) sdk.Error {
-	return store.Del(ctx, k.storeKey, orderKey(id))
+func (k Keeper) Del(ctx sdk.Context, id sdk.Uint) sdk.Error {
+	return errs.WrapNotFound(storeutil.Del(ctx, k.storeKey, orderKey(id)))
 }
 
-func (k Keeper) incrementSeq(ctx sdk.Context) store.EntityID {
-	return store.IncrementSeq(ctx, k.storeKey, []byte(seqKey))
+func (k Keeper) incrementSeq(ctx sdk.Context) sdk.Uint {
+	return storeutil.IncrementSeq(ctx, k.storeKey, []byte(seqKey))
 }
 
 func (k Keeper) Iterator(ctx sdk.Context, cb IteratorCB) {
@@ -202,6 +203,6 @@ func (k Keeper) doIterator(iter sdk.Iterator, cb IteratorCB) {
 	}
 }
 
-func orderKey(id store.EntityID) []byte {
-	return store.PrefixKeyString(valKey, id.Bytes())
+func orderKey(id sdk.Uint) []byte {
+	return storeutil.PrefixKeyString(valKey, storeutil.SDKUintSubkey(id))
 }

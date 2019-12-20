@@ -2,11 +2,10 @@ package store
 
 import (
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func FormatCoin(id EntityID, amount sdk.Uint) sdk.Coin {
+func FormatCoin(id sdk.Uint, amount sdk.Uint) sdk.Coin {
 	out, err := sdk.ParseCoin(fmt.Sprintf("%s%s", amount.String(), FormatDenom(id)))
 	// should never happen
 	if err != nil {
@@ -15,6 +14,6 @@ func FormatCoin(id EntityID, amount sdk.Uint) sdk.Coin {
 	return out
 }
 
-func FormatDenom(id EntityID) string {
+func FormatDenom(id sdk.Uint) string {
 	return fmt.Sprintf("asset%s", id.String())
 }
