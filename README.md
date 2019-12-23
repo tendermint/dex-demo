@@ -7,6 +7,7 @@ The code hosted in this repository is a **technology preview** and is suitable f
 # DeX Demo
 
 [![CircleCI](https://circleci.com/gh/tendermint/dex-demo.svg?style=svg)](https://circleci.com/gh/tendermint/dex-demo)
+[![](https://tokei.rs/b1/github/tendermint/dex-demo)](https://github.com/tendermint/dex-demo)
 
 The goal of this demo is to explore, ideate, and create the next set of decentralized exchange (DEX) projects
 that can be built on the Cosmos SDK. This platform intends to utilize certain DEX frameworks toward
