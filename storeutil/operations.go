@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	ErrNotFound      = errors.New("not found")
-	ErrAlreadyExists = errors.New("already exists")
+	ErrStoreKeyNotFound = errors.New("key not found")
+	ErrKeyExists        = errors.New("key exists")
 )
 
 // Get unmarshals a binary object in the store
@@ -18,7 +18,7 @@ func Get(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, proto i
 	store := ctx.KVStore(sk)
 	b := store.Get(key)
 	if b == nil {
-		return ErrNotFound
+		return ErrStoreKeyNotFound
 	}
 	cdc.MustUnmarshalBinaryBare(b, proto)
 	return nil
@@ -30,7 +30,7 @@ func Get(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, proto i
 // an error if the key already exists.
 func Create(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, val interface{}) error {
 	if Has(ctx, sk, key) {
-		return ErrAlreadyExists
+		return ErrKeyExists
 	}
 	store := ctx.KVStore(sk)
 	store.Set(key, cdc.MustMarshalBinaryBare(val))
@@ -43,7 +43,7 @@ func Create(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, val 
 // an error if the key does not exist.
 func Update(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, val interface{}) error {
 	if !Has(ctx, sk, key) {
-		return ErrNotFound
+		return ErrStoreKeyNotFound
 	}
 	store := ctx.KVStore(sk)
 	store.Set(key, cdc.MustMarshalBinaryBare(val))
@@ -56,7 +56,7 @@ func Update(ctx sdk.Context, sk sdk.StoreKey, cdc *codec.Codec, key []byte, val 
 // if the key does not exist.
 func Del(ctx sdk.Context, sk sdk.StoreKey, key []byte) error {
 	if !Has(ctx, sk, key) {
-		return ErrNotFound
+		return ErrStoreKeyNotFound
 	}
 	store := ctx.KVStore(sk)
 	store.Delete(key)

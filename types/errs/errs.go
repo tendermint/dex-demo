@@ -39,7 +39,7 @@ func WrapNotFound(err error) sdk.Error {
 	if err == nil {
 		return nil
 	}
-	if err == storeutil.ErrNotFound {
+	if err == storeutil.ErrStoreKeyNotFound {
 		return ErrNotFound(err.Error())
 	}
 	return sdk.ErrInternal(err.Error())
