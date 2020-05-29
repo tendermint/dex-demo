@@ -1,0 +1,36 @@
+---
+- name: add the dex user
+  user:
+    name: dex
+    shell: /bin/bash
+
+- name: install required tools
+  apt:
+    update_cache: yes
+    pkg:
+      - software-properties-common
+      - make
+      - jq
+      - build-essential
+      - moreutils
+
+- name: add golang ppa
+  apt_repository:
+    repo: ppa:longsleep/golang-backports
+
+- name: install golang
+  apt:
+    name: golang-go
+    update_cache: yes
+
+- name: set GOPATH
+  lineinfile:
+    dest: /etc/bash.bashrc
+    state: present
+    line: "export GOPATH=$HOME/go"
+
+- name: add GOPATH/bin PATH
+  lineinfile:
+    dest: /etc/bash.bashrc
+    state: present
+    line: "export PATH=$GOPATH/bin:$PATH"

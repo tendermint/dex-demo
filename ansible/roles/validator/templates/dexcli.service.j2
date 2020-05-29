@@ -1,0 +1,13 @@
+[Unit]
+Description=dexcli
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=dex
+Group=dex
+ExecStart=/home/dex/go/bin/dexcli rest-server --trust-node true
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

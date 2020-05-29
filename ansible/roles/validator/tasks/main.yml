@@ -1,0 +1,183 @@
+---
+- name: clone dex-demo repo
+  git:
+    repo: https://github.com/tendermint/dex-demo
+    dest: /usr/local/src/dex-demo
+    version: "{{ dex_version }}"
+
+- name: install dexd and dexcli
+  become_user: dex
+  make:
+    chdir: /usr/local/src/dex-demo
+    target: install
+
+- name: install dexd service
+  template:
+    src: templates/dexd.service.j2
+    dest: /etc/systemd/system/dexd.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install dexcli rest server service
+  template:
+    src: templates/dexcli.service.j2
+    dest: /etc/systemd/system/dexcli.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: stop dexd service
+  systemd:
+    name: dexd
+    state: stopped
+
+- name: stop dexcli service
+  systemd:
+    name: dexcli
+    state: stopped
+
+- name: reset node and genesis
+  when: reset | bool == true
+  become_user: dex
+  shell: |
+    ~/go/bin/dexd unsafe-reset-all
+    rm -rf ~/.dex*
+
+- name: config dexcli
+  become_user: dex
+  shell: |
+    ~/go/bin/dexcli config chain-id {{ chain_id }}
+    ~/go/bin/dexcli config output json
+    ~/go/bin/dexcli config indent true
+    ~/go/bin/dexcli config trust-node true
+
+- name: check if genesis exist
+  become_user: dex
+  stat:
+    path: ~/.dexd/config/genesis.json
+  register: genesis
+
+- name: initialize node
+  when: genesis.stat.exists == false
+  become_user: dex
+  args:
+    executable: /bin/bash
+  shell: ~/go/bin/dexd init {{ ansible_hostname }} --chain-id {{ chain_id }}
+
+- name: get genesis time
+  run_once: true
+  become_user: dex
+  args:
+    chdir: ~/.dexd/config
+  shell: jq -r .genesis_time genesis.json
+  register: genesis_time
+
+- name: synchronize genesis time and chain id
+  become_user: dex
+  args:
+    chdir: ~/.dexd/config
+  shell: |
+    jq -r '.genesis_time="{{ genesis_time.stdout }}"' genesis.json  | sponge genesis.json
+    jq -r '.chain_id="{{ chain_id }}"' genesis.json  | sponge genesis.json
+
+- name: check if key exists
+  become_user: dex
+  stat:
+    path: ~/.dexcli/keys
+  register: keyring
+
+- name: create key
+  when: keyring.stat.exists == false
+  become_user: dex
+  no_log: true
+  args:
+    executable: /bin/bash
+  shell: 'echo -e "{{ key_password }}\n{{ key_password }}" | ~/go/bin/dexcli keys add {{ ansible_hostname }} 2> ~/secret'
+
+- name: get node id
+  become_user: dex
+  args:
+    executable: /bin/bash
+  shell: ~/go/bin/dexd tendermint show-node-id
+  register: node_id
+
+- name: set persistent peers list
+  become_user: dex
+  args:
+    executable: /bin/bash
+    chdir: ~/.dexd/config
+  shell: |
+    IFS=',' read -r -a IDS <<< "{{ groups['validators'] | reject('equalto', inventory_hostname) | map('extract', hostvars, ['node_id', 'stdout']) | join(",") }}"
+    IFS=',' read -r -a IPS <<< "{{ groups['validators'] | reject('equalto', inventory_hostname) | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(",") }}"
+    for idx in "${!IDS[@]}"
+    do
+      peers="$peers,${IDS[index]}@${IPS[index]}:26656";
+    done
+    sed -i "s/persistent_peers =.*/persistent_peers = \"${peers:1}\"/g" config.toml
+
+- name: get key address
+  become_user: dex
+  args:
+    executable: /bin/bash
+  shell: ~/go/bin/dexcli keys show {{ ansible_hostname }} -a
+  register: key_address
+
+- name: adding keys to genesis
+  become_user: dex
+  with_items: "{{ groups['validators'] | map('extract', hostvars, ['key_address', 'stdout']) | list }}"
+  args:
+    executable: /bin/bash
+    chdir: ~/.dexd/config
+  shell: ~/go/bin/dexd add-genesis-account {{ item }} 40000000000000000000000000stake,40000000000000000000000000{{ denom }} || true
+
+- name: (re)generate gentx
+  become_user: dex
+  args:
+    executable: /bin/bash
+    warn: no
+  shell: |
+    rm -rf ~/.dexd/config/gentx
+    echo '{{ key_password }}' | ~/go/bin/dexd gentx --name {{ ansible_hostname }}
+
+- name: grab gentx file
+  become_user: dex
+  synchronize:
+    src: /home/dex/.dexd/config/gentx
+    dest: /tmp
+    mode: pull
+
+- name: add all gentxs
+  become_user: dex
+  synchronize:
+    src: /tmp/gentx
+    dest: /home/dex/.dexd/config
+    mode: push
+    owner: no
+    group: no
+
+- name: remove temporary gentx files
+  become: no
+  local_action: command rm -rf /tmp/gentx
+  args:
+    warn: no
+
+- name: collect all gentxs
+  become_user: dex
+  args:
+    executable: /bin/bash
+  shell: ~/go/bin/dexd collect-gentxs
+
+- name: start the dexd service
+  systemd:
+    name: dexd
+    daemon_reload: yes
+    state: restarted
+    enabled: True
+
+- name: start the dexcli rest server service
+  systemd:
+    name: dexcli
+    daemon_reload: yes
+    state: restarted
+    enabled: True
