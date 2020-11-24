@@ -148,7 +148,7 @@ func NewDexApp(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		params.StoreKey, assettypes.StoreKey, markettypes.StoreKey,
-		ordertypes.StoreKey,
+		ordertypes.StoreKey, ordertypes.LastPriceKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -199,6 +199,7 @@ func NewDexApp(
 		app.MarketKeeper,
 		app.AssetKeeper,
 		keys[ordertypes.StoreKey],
+		keys[ordertypes.LastPriceKey],
 		queue,
 		app.Cdc,
 	)

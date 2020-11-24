@@ -1,3 +1,15 @@
+# Modifications
+This is a fork of the Cosmos DEX for the Cosmos DeFi hackathon at SF Blockchain Week 2019, for which we came 4th overall out of 50 or so teams. This is one of the 2 submitted projects, which adds the ability to do things in the future to a DEX, which is part of my overall idea for 'Active Smart Contracts' (ASCs). The general problem being solved is that blockchains are passive and require a user to submit a transaction every time they want to do something on-chain. In terms of trading, this requires a user to be online 24/7 or have a bot trading for them because trades almost always depend on certain conditions: limit orders, stop losses etc. This lack of basic trading features puts DEXs far behind CEXs in terms of usability and is severely inhibiting the growth of the DEX space. A user needs to be able to set some conditions for some actions (if the price of X token falls below Y value, buy etc) in the future, go offline, and have those actions executed under the right conditions.
+
+The solution to allow actions on a blockchain to happen in the future is a cryptoeconomic one - essentially incentivising others to submit your transactions under certain conditions for you. In Cosmos, however, you can 'register' events to happen at the end of every block. I added a new type of action here, a stop loss, which constantly checks the registered stop losses to see if any of the conditions are true which enable them to be executed.
+
+The rest of this README is the original.
+
+
+
+
+
+
 # Disclaimer
 
 The code hosted in this repository is a **technology preview** and is suitable for **demo purposes only**. The features provided by this draft implementation are not meant to be functionally complete and are not suitable for deployment in production.
