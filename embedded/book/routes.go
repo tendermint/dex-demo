@@ -13,11 +13,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/embedded/auth"
 	"github.com/tendermint/dex-demo/embedded/node"
 	"github.com/tendermint/dex-demo/embedded/order"
 	"github.com/tendermint/dex-demo/pkg/matcheng"
-	"github.com/tendermint/dex-demo/types/store"
 )
 
 func RegisterRoutes(ctx context.CLIContext, r *mux.Router, cdc *codec.Codec) {
@@ -50,7 +50,7 @@ func bookHandler(ctx context.CLIContext, cdc *codec.Codec) http.HandlerFunc {
 		cdc.MustUnmarshalJSON(resJSON, &orders)
 
 		qRes := QueryResult{
-			MarketID:    store.NewEntityIDFromString(mktId),
+			MarketID:    sdk.NewUintFromString(mktId),
 			BlockNumber: block.Block.Height,
 			Bids:        make([]QueryResultEntry, 0),
 			Asks:        make([]QueryResultEntry, 0),

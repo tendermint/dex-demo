@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"github.com/tendermint/dex-demo/storeutil"
 	"strings"
 
 	dbm "github.com/tendermint/tm-db"
@@ -24,39 +25,39 @@ func NewTable(db dbm.DB, prefix string) *Table {
 }
 
 func (t *Table) Get(key []byte) []byte {
-	return t.db.Get(PrefixKeyString(t.prefix, key))
+	return t.db.Get(storeutil.PrefixKeyString(t.prefix, key))
 }
 
 func (t *Table) Has(key []byte) bool {
-	return t.db.Has(PrefixKeyString(t.prefix, key))
+	return t.db.Has(storeutil.PrefixKeyString(t.prefix, key))
 }
 
 func (t *Table) Set(key, value []byte) {
-	t.db.Set(PrefixKeyString(t.prefix, key), value)
+	t.db.Set(storeutil.PrefixKeyString(t.prefix, key), value)
 }
 
 func (t *Table) Delete(key []byte) {
-	t.db.Delete(PrefixKeyString(t.prefix, key))
+	t.db.Delete(storeutil.PrefixKeyString(t.prefix, key))
 }
 
 func (t *Table) Iterator(start []byte, end []byte, cb IteratorCB) {
-	iter := t.db.Iterator(PrefixKeyString(t.prefix, start), PrefixKeyString(t.prefix, end))
+	iter := t.db.Iterator(storeutil.PrefixKeyString(t.prefix, start), storeutil.PrefixKeyString(t.prefix, end))
 	t.iterate(iter, cb)
 }
 
 func (t *Table) ReverseIterator(start []byte, end []byte, cb IteratorCB) {
-	iter := t.db.ReverseIterator(PrefixKeyString(t.prefix, start), PrefixKeyString(t.prefix, end))
+	iter := t.db.ReverseIterator(storeutil.PrefixKeyString(t.prefix, start), storeutil.PrefixKeyString(t.prefix, end))
 	t.iterate(iter, cb)
 }
 
 func (t *Table) PrefixIterator(start []byte, cb IteratorCB) {
-	start = PrefixKeyString(t.prefix, start)
+	start = storeutil.PrefixKeyString(t.prefix, start)
 	iter := t.db.Iterator(start, sdk.PrefixEndBytes(start))
 	t.iterate(iter, cb)
 }
 
 func (t *Table) ReversePrefixIterator(start []byte, cb IteratorCB) {
-	start = PrefixKeyString(t.prefix, start)
+	start = storeutil.PrefixKeyString(t.prefix, start)
 	iter := t.db.ReverseIterator(start, sdk.PrefixEndBytes(start))
 	t.iterate(iter, cb)
 }

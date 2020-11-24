@@ -2,9 +2,7 @@ package cli
 
 import (
 	"github.com/spf13/cobra"
-
 	"github.com/tendermint/dex-demo/pkg/cliutil"
-	"github.com/tendermint/dex-demo/types/store"
 	"github.com/tendermint/dex-demo/x/asset/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -22,7 +20,7 @@ func GetCmdMint(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgMint(store.NewEntityIDFromString(args[0]), ctx.GetFromAddress(), sdk.NewUintFromString(args[1]))
+			msg := types.NewMsgMint(sdk.NewUintFromString(args[0]), ctx.GetFromAddress(), sdk.NewUintFromString(args[1]))
 			return cliutil.ValidateAndBroadcast(ctx, bldr, msg)
 		},
 	}
@@ -38,7 +36,7 @@ func GetCmdBurn(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			msg := types.NewMsgBurn(store.NewEntityIDFromString(args[0]), ctx.GetFromAddress(), sdk.NewUintFromString(args[1]))
+			msg := types.NewMsgBurn(sdk.NewUintFromString(args[0]), ctx.GetFromAddress(), sdk.NewUintFromString(args[1]))
 			return cliutil.ValidateAndBroadcast(ctx, bldr, msg)
 		},
 	}
@@ -60,7 +58,7 @@ func GetCmdTransfer(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransfer(store.NewEntityIDFromString(args[1]), ctx.GetFromAddress(), toAddr, sdk.NewUintFromString(args[2]))
+			msg := types.NewMsgTransfer(sdk.NewUintFromString(args[1]), ctx.GetFromAddress(), toAddr, sdk.NewUintFromString(args[2]))
 			return cliutil.ValidateAndBroadcast(ctx, bldr, msg)
 		},
 	}

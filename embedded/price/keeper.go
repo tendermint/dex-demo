@@ -1,15 +1,16 @@
 package price
 
 import (
+	"github.com/tendermint/dex-demo/storeutil"
 	"time"
 
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/tendermint/dex-demo/embedded/store"
 	"github.com/tendermint/dex-demo/types"
-	"github.com/tendermint/dex-demo/types/store"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/store/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type IteratorCB func(tick Tick) bool
@@ -26,7 +27,7 @@ func NewKeeper(db dbm.DB, cdc *codec.Codec) Keeper {
 	}
 }
 
-func (k Keeper) ReverseIteratorByMarket(mktID store.EntityID, cb IteratorCB) {
+func (k Keeper) ReverseIteratorByMarket(mktID sdk.Uint, cb IteratorCB) {
 	k.as.PrefixIterator(tickIterKey(mktID), func(_ []byte, v []byte) bool {
 		var tick Tick
 		k.cdc.MustUnmarshalBinaryBare(v, &tick)
@@ -34,7 +35,7 @@ func (k Keeper) ReverseIteratorByMarket(mktID store.EntityID, cb IteratorCB) {
 	})
 }
 
-func (k Keeper) ReverseIteratorByMarketFrom(mktID store.EntityID, from time.Time, cb IteratorCB) {
+func (k Keeper) ReverseIteratorByMarketFrom(mktID sdk.Uint, from time.Time, cb IteratorCB) {
 	k.as.ReverseIterator(tickKey(mktID, 0), sdk.PrefixEndBytes(tickKey(mktID, 0)), func(_ []byte, v []byte) bool {
 		var tick Tick
 		k.cdc.MustUnmarshalBinaryBare(v, &tick)
@@ -42,7 +43,7 @@ func (k Keeper) ReverseIteratorByMarketFrom(mktID store.EntityID, from time.Time
 	})
 }
 
-func (k Keeper) IteratorByMarketAndInterval(mktID store.EntityID, from time.Time, to time.Time, cb IteratorCB) {
+func (k Keeper) IteratorByMarketAndInterval(mktID sdk.Uint, from time.Time, to time.Time, cb IteratorCB) {
 	k.as.Iterator(tickKey(mktID, from.Unix()), sdk.PrefixEndBytes(tickKey(mktID, to.Unix())), func(_ []byte, v []byte) bool {
 		var tick Tick
 		k.cdc.MustUnmarshalBinaryBare(v, &tick)
@@ -71,10 +72,10 @@ func (k Keeper) OnEvent(event interface{}) error {
 	return nil
 }
 
-func tickKey(mktID store.EntityID, blockTime int64) []byte {
-	return store.PrefixKeyBytes(tickIterKey(mktID), store.Int64Subkey(blockTime))
+func tickKey(mktID sdk.Uint, blockTime int64) []byte {
+	return storeutil.PrefixKeyBytes(tickIterKey(mktID), storeutil.Int64Subkey(blockTime))
 }
 
-func tickIterKey(mktID store.EntityID) []byte {
-	return store.PrefixKeyString("tick", mktID.Bytes())
+func tickIterKey(mktID sdk.Uint) []byte {
+	return storeutil.PrefixKeyString("tick", storeutil.SDKUintSubkey(mktID))
 }

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/tendermint/dex-demo/types/store"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
@@ -11,12 +11,12 @@ const (
 )
 
 type Market struct {
-	ID           store.EntityID
-	BaseAssetID  store.EntityID
-	QuoteAssetID store.EntityID
+	ID           sdk.Uint
+	BaseAssetID  sdk.Uint
+	QuoteAssetID sdk.Uint
 }
 
-func New(id store.EntityID, baseAsset store.EntityID, quoteAsset store.EntityID) Market {
+func New(id sdk.Uint, baseAsset sdk.Uint, quoteAsset sdk.Uint) Market {
 	return Market{
 		ID:           id,
 		BaseAssetID:  baseAsset,

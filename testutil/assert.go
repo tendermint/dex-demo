@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/tendermint/dex-demo/types/store"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -16,10 +14,6 @@ func AssertEqualUints(t *testing.T, a sdk.Uint, b sdk.Uint, msgAndArgs ...interf
 }
 
 func AssertEqualInts(t *testing.T, a sdk.Int, b sdk.Int, msgAndArgs ...interface{}) {
-	assert.Equal(t, a.String(), b.String(), msgAndArgs...)
-}
-
-func AssertEqualEntityIDs(t *testing.T, a store.EntityID, b store.EntityID, msgAndArgs ...interface{}) {
 	assert.Equal(t, a.String(), b.String(), msgAndArgs...)
 }
 

@@ -8,7 +8,6 @@ import (
 
 	"github.com/tendermint/dex-demo/embedded"
 	"github.com/tendermint/dex-demo/embedded/auth"
-	"github.com/tendermint/dex-demo/types/store"
 	"github.com/tendermint/dex-demo/x/order/types"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
@@ -73,7 +72,7 @@ func postOrderHandler(ctx context.CLIContext, cdc *codec.Codec) http.HandlerFunc
 				break
 			}
 		}
-		orderID := store.NewEntityIDFromString(orderIDStr)
+		orderID := sdk.NewUintFromString(orderIDStr)
 		res := OrderCreationResponse{
 			BlockInclusion: embedded.BlockInclusion{
 				BlockNumber:     broadcastRes.Height,

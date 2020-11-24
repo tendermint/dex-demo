@@ -5,8 +5,6 @@ import (
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/tendermint/dex-demo/pkg/conv"
 )
 
 const (
@@ -16,8 +14,8 @@ const (
 var divisor = sdk.NewDec(int64(math.Pow(float64(10), float64(AssetDecimals))))
 
 func NormalizeQuoteQuantity(quotePrice sdk.Uint, baseQuantity sdk.Uint) (sdk.Uint, error) {
-	quotePDec := sdk.NewDecFromBigInt(conv.SDKUint2Big(quotePrice))
-	baseQDec := sdk.NewDecFromBigInt(conv.SDKUint2Big(baseQuantity))
+	quotePDec := sdk.NewDecFromBigInt(quotePrice.BigInt())
+	baseQDec := sdk.NewDecFromBigInt(baseQuantity.BigInt())
 	baseMult := baseQDec.Quo(divisor)
 	res := sdk.NewUintFromBigInt(quotePDec.Mul(baseMult).TruncateInt().BigInt())
 	var err error

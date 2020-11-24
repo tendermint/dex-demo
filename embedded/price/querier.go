@@ -6,12 +6,9 @@ import (
 	"github.com/tendermint/go-amino"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/tendermint/dex-demo/pkg/conv"
-	"github.com/tendermint/dex-demo/types/errs"
-	"github.com/tendermint/dex-demo/types/store"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/dex-demo/types/errs"
 )
 
 const (
@@ -37,7 +34,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 }
 
 func queryHistory(path []string, keeper Keeper) ([]byte, sdk.Error) {
-	mktID := store.NewEntityIDFromString(path[0])
+	mktID := sdk.NewUintFromString(path[0])
 
 	res := TickQueryResult{
 		MarketID: mktID,
@@ -66,7 +63,7 @@ func queryHistory(path []string, keeper Keeper) ([]byte, sdk.Error) {
 }
 
 func queryCandles(path []string, data []byte, keeper Keeper) ([]byte, sdk.Error) {
-	mktID := store.NewEntityIDFromString(path[0])
+	mktID := sdk.NewUintFromString(path[0])
 
 	var params CandleQueryParams
 	err := amino.UnmarshalBinaryBare(data, &params)
@@ -125,7 +122,7 @@ func queryCandles(path []string, data []byte, keeper Keeper) ([]byte, sdk.Error)
 }
 
 func queryDaily(path []string, keeper Keeper) ([]byte, sdk.Error) {
-	mktID := store.NewEntityIDFromString(path[0])
+	mktID := sdk.NewUintFromString(path[0])
 
 	res := DailyQueryResult{
 		Pair:   "",
@@ -170,7 +167,7 @@ func queryDaily(path []string, keeper Keeper) ([]byte, sdk.Error) {
 	if prevClose.IsZero() {
 		res.Change = sdk.OneDec()
 	} else {
-		res.Change = sdk.NewDecFromBigInt(conv.SDKUint2Big(res.Last)).Quo(sdk.NewDecFromBigInt(conv.SDKUint2Big(prevClose)))
+		res.Change = sdk.NewDecFromBigInt(res.Last.BigInt()).Quo(sdk.NewDecFromBigInt(prevClose.BigInt()))
 	}
 
 	b, err := codec.MarshalJSONIndent(keeper.cdc, res)

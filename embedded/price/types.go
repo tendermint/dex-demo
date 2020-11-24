@@ -10,13 +10,11 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/tendermint/dex-demo/types/store"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Tick struct {
-	MarketID    store.EntityID
+	MarketID    sdk.Uint
 	Pair        string
 	BlockNumber int64
 	BlockTime   int64
@@ -30,9 +28,9 @@ type TickEntry struct {
 }
 
 type TickQueryResult struct {
-	MarketID store.EntityID `json:"market_id"`
-	Pair     string         `json:"pair"`
-	Ticks    []TickEntry    `json:"ticks"`
+	MarketID sdk.Uint    `json:"market_id"`
+	Pair     string      `json:"pair"`
+	Ticks    []TickEntry `json:"ticks"`
 }
 
 func (t TickQueryResult) String() string {
@@ -122,9 +120,9 @@ type CandleQueryParams struct {
 }
 
 type CandleQueryResult struct {
-	MarketID store.EntityID `json:"market_id"`
-	Pair     string         `json:"pair"`
-	Candles  []CandleEntry  `json:"candles"`
+	MarketID sdk.Uint      `json:"market_id"`
+	Pair     string        `json:"pair"`
+	Candles  []CandleEntry `json:"candles"`
 }
 
 type CandleEntry struct {

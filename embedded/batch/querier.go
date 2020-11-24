@@ -3,11 +3,9 @@ package batch
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/tendermint/dex-demo/types/errs"
-	"github.com/tendermint/dex-demo/types/store"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/dex-demo/types/errs"
 )
 
 const (
@@ -30,7 +28,7 @@ func queryLatest(path []string, keeper Keeper) ([]byte, sdk.Error) {
 		return nil, errs.ErrInvalidArgument("must specify a market ID")
 	}
 
-	marketID := store.NewEntityIDFromString(path[0])
+	marketID := sdk.NewUintFromString(path[0])
 	res, sdkErr := keeper.LatestByMarket(marketID)
 	if sdkErr != nil {
 		if sdkErr.Code() == errs.CodeNotFound {

@@ -2,16 +2,14 @@ package types
 
 import (
 	"bytes"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/olekukonko/tablewriter"
-
-	"github.com/tendermint/dex-demo/types/store"
 )
 
 type NamedMarket struct {
-	ID           store.EntityID
-	BaseAssetID  store.EntityID
-	QuoteAssetID store.EntityID
+	ID           sdk.Uint
+	BaseAssetID  sdk.Uint
+	QuoteAssetID sdk.Uint
 	Name         string
 }
 

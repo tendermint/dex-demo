@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/dex-demo/pkg/matcheng"
 	"github.com/tendermint/dex-demo/testutil"
 	"github.com/tendermint/dex-demo/testutil/mockapp"
 	"github.com/tendermint/dex-demo/testutil/testflags"
-	uexstore "github.com/tendermint/dex-demo/types/store"
 )
 
 func TestKeeper_ExecuteAndCancelExpired(t *testing.T) {
@@ -56,13 +56,13 @@ func TestKeeper_ExecuteAndCancelExpired(t *testing.T) {
 	}
 	require.NoError(t, app.ExecutionKeeper.ExecuteAndCancelExpired(ctx))
 	t.Run("should expire orders out of TIF", func(t *testing.T) {
-		assert.False(t, app.OrderKeeper.Has(ctx, uexstore.NewEntityID(1)))
+		assert.False(t, app.OrderKeeper.Has(ctx, sdk.OneUint()))
 	})
 	t.Run("should update quantities of partially filled orders", func(t *testing.T) {
-		ord3, err := app.OrderKeeper.Get(ctx, uexstore.NewEntityID(3))
+		ord3, err := app.OrderKeeper.Get(ctx, sdk.NewUint(3))
 		require.NoError(t, err)
 		testutil.AssertEqualUints(t, testutil.ToBaseUnits(5), ord3.Quantity)
-		ord4, err := app.OrderKeeper.Get(ctx, uexstore.NewEntityID(4))
+		ord4, err := app.OrderKeeper.Get(ctx, sdk.NewUint(4))
 		require.NoError(t, err)
 		testutil.AssertEqualUints(t, testutil.ToBaseUnits(5), ord4.Quantity)
 	})
@@ -73,7 +73,7 @@ func TestKeeper_ExecuteAndCancelExpired(t *testing.T) {
 	require.NoError(t, app.ExecutionKeeper.ExecuteAndCancelExpired(ctx))
 
 	t.Run("should delete completely filled orders", func(t *testing.T) {
-		assert.False(t, app.OrderKeeper.Has(ctx, uexstore.NewEntityID(5)))
+		assert.False(t, app.OrderKeeper.Has(ctx, sdk.NewUint(5)))
 	})
 	t.Run("all executed orders should exchange coins", func(t *testing.T) {
 		// seller should have 9990 asset 1, because two orders were

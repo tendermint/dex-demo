@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/tendermint/dex-demo/storeutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -92,8 +93,8 @@ func TestTable(t *testing.T) {
 	})
 	t.Run("can iterate over a prefix", func(t *testing.T) {
 		for i := 0; i < 255; i++ {
-			tb1.Set(PrefixKeyString("pref1", []byte{byte(i)}), []byte{byte(i)})
-			tb1.Set(PrefixKeyString("pref2", []byte{byte(i)}), []byte{byte(i)})
+			tb1.Set(storeutil.PrefixKeyString("pref1", []byte{byte(i)}), []byte{byte(i)})
+			tb1.Set(storeutil.PrefixKeyString("pref2", []byte{byte(i)}), []byte{byte(i)})
 		}
 
 		i := 0
@@ -110,8 +111,8 @@ func TestTable(t *testing.T) {
 	})
 	t.Run("can reverse iterate over a prefix", func(t *testing.T) {
 		for i := 0; i < 255; i++ {
-			tb1.Set(PrefixKeyString("pref1", []byte{byte(i)}), []byte{byte(i)})
-			tb1.Set(PrefixKeyString("pref2", []byte{byte(i)}), []byte{byte(i)})
+			tb1.Set(storeutil.PrefixKeyString("pref1", []byte{byte(i)}), []byte{byte(i)})
+			tb1.Set(storeutil.PrefixKeyString("pref2", []byte{byte(i)}), []byte{byte(i)})
 		}
 
 		i := 254

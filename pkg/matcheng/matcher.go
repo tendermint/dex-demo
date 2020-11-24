@@ -4,15 +4,12 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/tendermint/dex-demo/pkg/conv"
-	"github.com/tendermint/dex-demo/pkg/log"
-	"github.com/tendermint/dex-demo/types/store"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/dex-demo/pkg/log"
 )
 
 type Order struct {
-	ID       store.EntityID
+	ID       sdk.Uint
 	Price    sdk.Uint
 	Quantity sdk.Uint
 }
@@ -53,7 +50,7 @@ func NewMatcher() *Matcher {
 // degen case: vertical line (then choose midpoint)
 // other degen case: no overlap.
 
-func (m *Matcher) EnqueueOrder(oType Direction, id store.EntityID, price sdk.Uint, quantity sdk.Uint) {
+func (m *Matcher) EnqueueOrder(oType Direction, id sdk.Uint, price sdk.Uint, quantity sdk.Uint) {
 	m.mtx.Lock()
 	defer m.mtx.Unlock()
 
@@ -231,8 +228,8 @@ func (m *Matcher) Match() *MatchResults {
 		}
 	}
 
-	aggDemandDec := sdk.NewDecFromBigInt(conv.SDKUint2Big(aggDemand))
-	aggSupplyDec := sdk.NewDecFromBigInt(conv.SDKUint2Big(aggSupply))
+	aggDemandDec := sdk.NewDecFromBigInt(aggDemand.BigInt())
+	aggSupplyDec := sdk.NewDecFromBigInt(aggSupply.BigInt())
 
 	proRataDec := aggSupplyDec.Quo(aggDemandDec)
 	proRataRecip := sdk.OneDec().Quo(proRataDec)
@@ -252,7 +249,7 @@ func (m *Matcher) Match() *MatchResults {
 		if overOne {
 			qtyInt = bid.Quantity
 		} else {
-			qtyDec := sdk.NewDecFromBigInt(conv.SDKUint2Big(bid.Quantity)).Mul(proRataDec).Ceil()
+			qtyDec := sdk.NewDecFromBigInt(bid.Quantity.BigInt()).Mul(proRataDec).Ceil()
 			qtyInt = sdk.NewUintFromString(qtyDec.RoundInt().String())
 
 			if matchedBidVolume.Add(qtyDec).GT(maxBidVolume) {
@@ -282,7 +279,7 @@ func (m *Matcher) Match() *MatchResults {
 
 		var qtyInt sdk.Uint
 		if overOne {
-			qtyDec := proRataRecip.Mul(sdk.NewDecFromBigInt(conv.SDKUint2Big(ask.Quantity))).Ceil()
+			qtyDec := proRataRecip.Mul(sdk.NewDecFromBigInt(ask.Quantity.BigInt())).Ceil()
 			qtyInt = sdk.NewUintFromString(qtyDec.RoundInt().String())
 
 			if matchedAskVolume.Add(qtyDec).GT(maxAskVolume) {
@@ -340,7 +337,7 @@ func (m *Matcher) enqueueBid(order *Order) {
 	i := sort.Search(len(m.bids), func(i int) bool {
 		tester := m.bids[i]
 		if tester.Price.Equal(order.Price) {
-			return tester.ID.Cmp(order.ID) < 0
+			return tester.ID.LT(order.ID)
 		}
 		return tester.Price.GT(order.Price)
 	})
@@ -361,7 +358,7 @@ func (m *Matcher) enqueueAsk(order *Order) {
 	i := sort.Search(len(m.asks), func(i int) bool {
 		tester := m.asks[i]
 		if tester.Price.Equal(order.Price) {
-			return tester.ID.Cmp(order.ID) < 0
+			return tester.ID.LT(order.ID)
 		}
 		return tester.Price.GT(order.Price)
 	})
