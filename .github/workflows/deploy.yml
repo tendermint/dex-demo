@@ -1,0 +1,20 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: apply ansible scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: apply ansible
+        uses: ./.github/actions/ansible
+        with:
+          ssh_key_b64: ${{ secrets.SSH_KEY_B64 }}
+          playbook: ansible/playbook.yml
+          inventory: ansible/inventory.ini
+          extra_vars: reset=false

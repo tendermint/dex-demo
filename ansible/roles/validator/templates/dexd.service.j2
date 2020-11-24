@@ -1,0 +1,13 @@
+[Unit]
+Description=dexd
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=dex
+Group=dex
+ExecStart=/home/dex/go/bin/dexd start --pruning=nothing
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

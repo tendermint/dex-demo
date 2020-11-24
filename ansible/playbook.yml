@@ -1,0 +1,22 @@
+---
+- hosts: validators
+  become: yes
+  remote_user: ubuntu
+  vars:
+    dex_version: master
+    reset: false
+    chain_id: uex-testnet
+    denom: asset
+    key_password: supersecret
+  roles:
+    - common
+    - validator
+
+- hosts: validators[0]
+  become: yes
+  remote_user: ubuntu
+  vars:
+    domain_name: dex.hopto.org
+    letsencrypt_email: helder@tendermint.com
+  roles:
+    - webapp
