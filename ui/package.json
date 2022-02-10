@@ -33,7 +33,7 @@
     "@types/react-redux": "^7.0.9",
     "@types/react-router-dom": "^4.3.3",
     "@types/redux-logger": "^3.0.7",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "react-scripts": "3.0.1",
     "typescript": "3.4.5"
   },
